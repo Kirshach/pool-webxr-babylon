@@ -1,23 +1,42 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import { setupCounter } from './counter'
+import { ArcRotateCamera, DracoCompression, Engine, HemisphericLight, Scene, Vector3 } from 'babylonjs';
+import 'babylonjs-loaders'; // TODO: tree-shake
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+import { getPoolTable } from './pool-table';
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+DracoCompression.Configuration = {
+  decoder: {
+    wasmUrl: '/draco/draco_wasm_wrapper_gltf.js',
+    wasmBinaryUrl: '/draco/draco_decoder_gltf.wasm',
+    fallbackUrl: '/draco/draco_decoder_gltf.wasm',
+  },
+};
+
+const canvas = document.getElementById('canvas');
+
+if (!canvas) {
+  throw new Error('Canvas not found');
+} else if (!(canvas instanceof HTMLCanvasElement)) {
+  throw new Error('"#canvas" element was found but is not instance of HTMLCanvasElement');
+}
+
+const engine = new Engine(canvas, true, {});
+
+const scene = new Scene(engine);
+const camera = new ArcRotateCamera(
+  'camera',
+  -Math.PI / 2,
+  Math.PI / 2.5,
+  15,
+  new Vector3(0, 0, 0),
+  scene
+);
+camera.attachControl(canvas, false);
+
+new HemisphericLight('light', new Vector3(1, 1, 0), scene);
+
+const table = await getPoolTable(scene);
+console.log(table);
+
+engine.runRenderLoop(() => scene.render());
+window.addEventListener('resize', () => engine.resize());
+
