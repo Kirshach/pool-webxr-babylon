@@ -1,4 +1,4 @@
-import { type Scene, SceneLoader, Vector3 } from 'babylonjs';
+import { type Scene, SceneLoader, Vector3 } from '@babylonjs/core';
 
 export const getPoolTable = (scene: Scene) => SceneLoader.ImportMeshAsync(
   'SM_PoolTable01',
@@ -10,4 +10,5 @@ export const getPoolTable = (scene: Scene) => SceneLoader.ImportMeshAsync(
     table.rotate(new Vector3(-1, 0, 0), Math.PI / 2)
     table.rotate(new Vector3(0, 0, 1), Math.PI / 2)
     table.scaling.set(0.1, 0.1, 0.1);
-  });
+  }
+);

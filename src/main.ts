@@ -1,5 +1,6 @@
-import { ArcRotateCamera, AxesViewer, DracoCompression, Engine, HemisphericLight, Scene, Vector3 } from 'babylonjs';
-import 'babylonjs-loaders'; // TODO: 667kB, need to tree-shake it
+import { ArcRotateCamera, AxesViewer, DracoCompression, Engine, HemisphericLight, Scene, Vector3 } from '@babylonjs/core';
+
+import '@babylonjs/loaders'; // TODO: 667kB, need to tree-shake it
 
 import { getPoolTable } from './pool-table';
 
@@ -37,22 +38,26 @@ new HemisphericLight('light', new Vector3(1, 1, 0), scene);
 const table = await getPoolTable(scene);
 console.log(table);
 
-new AxesViewer(scene, 5);
-
 // TODO: move to a dev-time button
-Object.defineProperty(window, 'debug', {
-  get() {
-    return this._debug;
-  },
-  set(v: boolean) {
-    this._debug = v;
-    if (v) {
-      scene.debugLayer.show({ overlay: true });
-    } else {
-      scene.debugLayer.hide();
-    }
-  }
-});
+if (process.env.NODE_ENV === 'development') {
+  new AxesViewer(scene, 3.5);
+  import('@babylonjs/inspector').then(() => {
+    Object.defineProperty(window, 'debug', {
+      get() {
+        return this._debug;
+      },
+      set(v: boolean) {
+        this._debug = v;
+        if (v) {
+          scene.debugLayer.show({ overlay: true });
+        } else {
+          scene.debugLayer.hide();
+        }
+      }
+    });
+  });
+}
+
 
 engine.runRenderLoop(() => scene.render());
 window.addEventListener('resize', () => engine.resize());
