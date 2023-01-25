@@ -7,8 +7,8 @@ export const getPoolTable = (scene: Scene) => SceneLoader.ImportMeshAsync(
   scene
 ).then(
   ({ meshes: [table] }) => {
-    table.rotate(new Vector3(-1, 0, 0), Math.PI / 2)
-    table.rotate(new Vector3(0, 0, 1), Math.PI / 2)
-    table.scaling.set(0.1, 0.1, 0.1);
+    table.rotate(new Vector3(-1, 0, 0), Math.PI / 2);
+    table.rotate(new Vector3(0, 0, 1), Math.PI / 2);
+    table.scaling.set(0.01, 0.01, 0.01);
   }
 );
