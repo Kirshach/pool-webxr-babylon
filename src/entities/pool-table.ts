@@ -1,6 +1,6 @@
 import { type Scene, SceneLoader, Vector3 } from '@babylonjs/core';
 
-export const getPoolTable = (scene: Scene) => SceneLoader.ImportMeshAsync(
+export const createPoolTable = (scene: Scene) => SceneLoader.ImportMeshAsync(
   'SM_PoolTable01',
   '/assets/pooltable/',
   'scene.gltf',

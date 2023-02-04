@@ -1,18 +1,33 @@
 import {
   ArcRotateCamera,
   AxesViewer,
+  CannonJSPlugin,
+  Color3,
+  Color4,
   DracoCompression,
   Engine,
   HemisphericLight,
   MeshBuilder,
+  PhysicsImpostor,
   Scene,
   Sound,
+  SpotLight,
+  Tools,
   Vector3,
 } from "@babylonjs/core";
-
 import "@babylonjs/loaders"; // TODO: 667kB, need to tree-shake it
+import * as CANNON_ES_NS from 'cannon-es';
 
-import { getPoolTable } from "./pool-table";
+import myHeartIsHome from "./assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3?url";
+
+import { createPoolTable } from "./entities/pool-table";
+import { createGround } from './entities/ground';
+
+declare global {
+  var CANNON: typeof CANNON_ES_NS;
+}
+
+globalThis.CANNON = CANNON_ES_NS;
 
 DracoCompression.Configuration = {
   decoder: {
@@ -34,7 +49,12 @@ if (!canvas) {
 
 const engine = new Engine(canvas, true, {});
 
+const physicsPlugin = new CannonJSPlugin();
+const gravityVector = new Vector3(0, -9.81, 0);
+
 const scene = new Scene(engine);
+scene.enablePhysics(gravityVector, physicsPlugin);
+
 const camera = new ArcRotateCamera(
   "camera",
   Math.PI / 2 - Math.PI / 4,
@@ -45,17 +65,41 @@ const camera = new ArcRotateCamera(
 );
 camera.attachControl(canvas, false);
 
+const box = MeshBuilder.CreateBox(
+  'Test Box',
+  { faceColors: Array.from({ length: 6 }).map(() => new Color4(0.4, 0, 0, 0)) },
+  scene
+);
+box.physicsImpostor = new PhysicsImpostor(
+  box,
+  PhysicsImpostor.BoxImpostor,
+  { mass: 1, restitution: 0.9 });
+box.scaling.x = 2;
+box.position.set(-2, 2, -2);
+box.rotation.y = Tools.ToRadians(45);
+
 // add lights
-new HemisphericLight("light", new Vector3(0.1, 0.1, 0), scene);
-// add ground
-MeshBuilder.CreateGround("ground", { width: 10, height: 10 });
-// add table
-await getPoolTable(scene);
+const hemisphericLight = new HemisphericLight("hemispheric_light", new Vector3(0.1, 0.1, 0), scene);
+hemisphericLight.intensity = 0.01;
+
+const lampLight = new SpotLight(
+  "spot_light",
+  new Vector3(0, 2, 0),
+  Vector3.Zero(),
+  Math.PI,
+  10,
+  scene
+);
+lampLight.intensity = 600;
+lampLight.diffuse = new Color3(1, 1, 0.9);
+
+await createPoolTable(scene);
+await createGround(scene);
 
 // add background music
 new Sound(
   "Mark Woollard - My Heart Is Home",
-  "/assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3",
+  myHeartIsHome,
   scene,
   null,
   { loop: true, autoplay: true }
