@@ -9,6 +9,7 @@ import {
   HemisphericLight,
   MeshBuilder,
   PhysicsImpostor,
+  ShadowGenerator,
   Scene,
   Sound,
   SpotLight,
@@ -54,6 +55,7 @@ const gravityVector = new Vector3(0, -9.81, 0);
 
 const scene = new Scene(engine);
 scene.enablePhysics(gravityVector, physicsPlugin);
+scene.ambientColor = new Color3(0, 0, 0);
 
 const camera = new ArcRotateCamera(
   "camera",
@@ -82,7 +84,7 @@ box.rotation.y = Tools.ToRadians(45);
 const hemisphericLight = new HemisphericLight("hemispheric_light", new Vector3(0.1, 0.1, 0), scene);
 hemisphericLight.intensity = 0.01;
 
-const lampLight = new SpotLight(
+const spotLight = new SpotLight(
   "spot_light",
   new Vector3(0, 2, 0),
   Vector3.Zero(),
@@ -90,41 +92,56 @@ const lampLight = new SpotLight(
   10,
   scene
 );
-lampLight.intensity = 600;
-lampLight.diffuse = new Color3(1, 1, 0.9);
+spotLight.intensity = 500;
+spotLight.diffuse = new Color3(1, 1, 0.9);
+// const pointLight = new PointLight("pointLight", new Vector3(0, 2, 0), scene);
+// pointLight.intensity = 0.1;
+// pointLight.range = 1;
 
-await createPoolTable(scene);
-await createGround(scene);
+Promise.all([createPoolTable(scene), createGround(scene)]).then(([table, ground]) => {
+  // shadows
+  const shadowGenerator = new ShadowGenerator(1024, spotLight);
+  shadowGenerator.addShadowCaster(table, true /* check if this parameter changes anything */);
 
-// add background music
-new Sound(
-  "Mark Woollard - My Heart Is Home",
-  myHeartIsHome,
-  scene,
-  null,
-  { loop: true, autoplay: true }
-);
+  scene.createDefaultXRExperienceAsync({
+    floorMeshes: [ground]
+  }).then((xrExperience) => {
+    console.log(xrExperience)
+    // run the loop
+    engine.runRenderLoop(() => scene.render());
+    window.addEventListener("resize", () => engine.resize());
 
-// TODO: move to a dev-time button
-if (process.env.NODE_ENV === "development") {
-  new AxesViewer(scene, 0.35);
-  import("@babylonjs/inspector").then(() => {
-    Object.defineProperty(window, "debug", {
-      get() {
-        return this._debug;
-      },
-      set(v: boolean) {
-        this._debug = v;
-        if (v) {
-          scene.debugLayer.show({ overlay: true });
-        } else {
-          scene.debugLayer.hide();
-        }
-      },
-    });
+    // add background music
+    new Sound(
+      "Mark Woollard - My Heart Is Home",
+      myHeartIsHome,
+      scene,
+      null,
+      { loop: true, autoplay: true }
+    );
+
+    // TODO: move to a dev-time button
+    if (process.env.NODE_ENV === "development") {
+      new AxesViewer(scene, 0.35);
+      import("@babylonjs/inspector").then(() => {
+        Object.defineProperty(window, "debug", {
+          get() {
+            return this._debug;
+          },
+          set(v: boolean) {
+            this._debug = v;
+            if (v) {
+              scene.debugLayer.show({ overlay: true });
+            } else {
+              scene.debugLayer.hide();
+            }
+          },
+        });
+      });
+    }
   });
-}
+});
 
-// run the loop
-engine.runRenderLoop(() => scene.render());
-window.addEventListener("resize", () => engine.resize());
+
+
+

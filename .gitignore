@@ -131,3 +131,6 @@ dist
 
 # MacOS Finder
 **/.DS_Store
+
+# Build folder
+/dist
