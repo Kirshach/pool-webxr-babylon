@@ -12,7 +12,7 @@ import { WebXRDefaultExperience } from '@babylonjs/core/XR/webXRDefaultExperienc
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder.js'
 import { Scene } from '@babylonjs/core/scene.js'
 import { Engine } from '@babylonjs/core/Engines/engine.js'
-import { Color3, Color4 } from '@babylonjs/core/Maths/math.color.js'
+import { Color4 } from '@babylonjs/core/Maths/math.color.js'
 import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera.js'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector.js';
 
@@ -58,7 +58,7 @@ const gravityVector = new Vector3(0, -9.81, 0);
 
 const scene = new Scene(engine);
 scene.enablePhysics(gravityVector, physicsPlugin);
-scene.ambientColor = new Color3(0, 0, 0);
+scene.clearColor = new Color4(0, 0, 0, 1);
 
 const camera = new FreeCamera(
   "camera",

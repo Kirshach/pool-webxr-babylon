@@ -1,24 +1,31 @@
 // TODO: tree-shake
 import {
   type Scene,
-  StandardMaterial,
   Texture,
   PhysicsImpostor
 } from "@babylonjs/core";
+import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { CreateGround } from "@babylonjs/core/Meshes/Builders/groundBuilder";
 
 export const createGround = async (scene: Scene) => {
   const ground = CreateGround("ground", { width: 12.5, height: 12.5 }, scene);
-  const groundMaterial = new StandardMaterial('ground_material', scene);
+  const groundMaterial = new PBRMaterial('ground_material', scene);
 
   [
-    groundMaterial.diffuseTexture = new Texture('/assets/ground-textures/diff.png', scene),
-    groundMaterial.ambientTexture = new Texture('/assets/ground-textures/ao.png', scene),
-    groundMaterial.bumpTexture = new Texture('/assets/ground-textures/normal.png', scene)
+    groundMaterial.albedoTexture = new Texture('/assets/ground-textures/diff.avif', scene),
+    groundMaterial.metallicTexture = new Texture('/assets/ground-textures/arm.avif', scene),
+    groundMaterial.bumpTexture = new Texture('/assets/ground-textures/normal.avif', scene),
   ].forEach((texture) => {
-    texture.uScale = 8;
-    texture.vScale = 8;
+    texture.uScale = 4;
+    texture.vScale = 4;
   });
+
+  groundMaterial.useAmbientOcclusionFromMetallicTextureRed = true;
+  groundMaterial.useRoughnessFromMetallicTextureGreen = true;
+  groundMaterial.useMetallnessFromMetallicTextureBlue = true;
+
+  groundMaterial.invertNormalMapX = true;
+  groundMaterial.invertNormalMapY = true;
 
   ground.material = groundMaterial;
 
