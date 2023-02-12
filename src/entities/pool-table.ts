@@ -1,6 +1,6 @@
 import { type Scene, SceneLoader, Vector3 } from '@babylonjs/core';
 
-// TODO: check when this one becomes tree-shakeable
+// TODO: utilize AVIF
 export const createPoolTable = (scene: Scene) => SceneLoader.ImportMeshAsync(
   'SM_PoolTable01',
   '/assets/pooltable/',
@@ -12,4 +12,5 @@ export const createPoolTable = (scene: Scene) => SceneLoader.ImportMeshAsync(
     table.rotate(new Vector3(0, 0, 1), Math.PI / 2);
     table.scaling.set(0.01, 0.01, 0.01);
     return table;
-  });
+  }
+);

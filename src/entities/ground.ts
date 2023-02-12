@@ -12,9 +12,9 @@ export const createGround = async (scene: Scene) => {
   const groundMaterial = new PBRMaterial('ground_material', scene);
 
   [
-    groundMaterial.albedoTexture = new Texture('/assets/ground-textures/diff.avif', scene),
-    groundMaterial.metallicTexture = new Texture('/assets/ground-textures/arm.avif', scene),
-    groundMaterial.bumpTexture = new Texture('/assets/ground-textures/normal.avif', scene),
+    groundMaterial.albedoTexture = new Texture('/assets/ground-textures/diff.png', scene),
+    groundMaterial.metallicTexture = new Texture('/assets/ground-textures/arm.png', scene),
+    groundMaterial.bumpTexture = new Texture('/assets/ground-textures/normal.png', scene),
   ].forEach((texture) => {
     texture.uScale = 4;
     texture.vScale = 4;

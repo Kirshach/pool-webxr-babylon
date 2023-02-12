@@ -122,13 +122,13 @@
   ],
   "images": [
     {
-      "uri": "textures/M_PoolTable01_baseColor.avif"
+      "uri": "textures/M_PoolTable01_baseColor.png"
     },
     {
-      "uri": "textures/M_PoolTable01_metallicRoughness.avif"
+      "uri": "textures/M_PoolTable01_metallicRoughness.png"
     },
     {
-      "uri": "textures/M_PoolTable01_normal.avif"
+      "uri": "textures/M_PoolTable01_normal.png"
     }
   ],
   "materials": [
