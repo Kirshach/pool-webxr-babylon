@@ -1,5 +1,6 @@
 import { type Scene, SceneLoader, Vector3 } from '@babylonjs/core';
 
+// TODO: check when this one becomes tree-shakeable
 export const createPoolTable = (scene: Scene) => SceneLoader.ImportMeshAsync(
   'SM_PoolTable01',
   '/assets/pooltable/',
