@@ -28,6 +28,7 @@ export const createGround = async (scene: Scene) => {
   groundMaterial.invertNormalMapY = true;
 
   ground.material = groundMaterial;
+  ground.receiveShadows = true;
 
   ground.physicsImpostor = new PhysicsImpostor(
     ground,

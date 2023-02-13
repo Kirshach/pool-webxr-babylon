@@ -88,9 +88,9 @@ const table = await createPoolTable(scene);
 const ground = await createGround(scene);
 
 // shadows
-const shadowGenerator = new ShadowGenerator(1024, spotLight);
+const shadowGenerator = new ShadowGenerator(2048, spotLight, true);
 shadowGenerator.addShadowCaster(table, true /* check if this parameter changes anything */);
-ground.receiveShadows = true;
+shadowGenerator.usePoissonSampling = true;
 
 // create gizmos
 if (process.env.NODE_ENV === 'development') {
