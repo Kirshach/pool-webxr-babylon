@@ -1,20 +1,16 @@
-// TODO: tree-shake
-import {
-  AxesViewer,
-  CannonJSPlugin,
-  DracoCompression,
-  PhysicsImpostor,
-  ShadowGenerator,
-  Sound,
-  Tools,
-} from "@babylonjs/core";
-import { WebXRDefaultExperience } from '@babylonjs/core/XR/webXRDefaultExperience.js'
-import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder.js'
-import { Scene } from '@babylonjs/core/scene.js'
-import { Engine } from '@babylonjs/core/Engines/engine.js'
-import { Color4 } from '@babylonjs/core/Maths/math.color.js'
-import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera.js'
-import { Vector3 } from '@babylonjs/core/Maths/math.vector.js';
+import { AxesViewer } from "@babylonjs/core/Debug/axesViewer";
+import { CannonJSPlugin } from "@babylonjs/core/Physics/v1/Plugins/cannonJSPlugin";
+import { Color4 } from '@babylonjs/core/Maths/math.color';
+import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder';
+import { DracoCompression } from "@babylonjs/core/Meshes/Compression/dracoCompression";
+import { Engine } from '@babylonjs/core/Engines/engine';
+import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera';
+import { PhysicsImpostor } from "@babylonjs/core/Physics/v1/physicsImpostor";
+import { Scene } from '@babylonjs/core/scene';
+import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator";
+import { Sound } from "@babylonjs/core/Audio/sound";
+import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { WebXRDefaultExperience } from '@babylonjs/core/XR/webXRDefaultExperience';
 
 import "@babylonjs/loaders/glTF"; // TODO: 667kB, need to tree-shake it
 
@@ -26,6 +22,8 @@ import { createPoolTable } from "./entities/pool-table";
 import { createGround } from './entities/ground';
 
 import { createLights } from './app/createLights';
+
+const toRadians = (angle: number) => (angle * Math.PI) / 180;
 
 declare global {
   var CANNON: typeof CANNON_ES_NS;
@@ -80,7 +78,7 @@ box.physicsImpostor = new PhysicsImpostor(
   { mass: 1, restitution: 0.9 });
 box.scaling.x = 2;
 box.position.set(-2, 2, -2);
-box.rotation.y = Tools.ToRadians(45);
+box.rotation.y = toRadians(45);
 
 const { spotLight } = createLights(scene);
 

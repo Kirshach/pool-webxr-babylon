@@ -1,11 +1,8 @@
-// TODO: tree-shake
-import {
-  type Scene,
-  Texture,
-  PhysicsImpostor
-} from "@babylonjs/core";
-import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { CreateGround } from "@babylonjs/core/Meshes/Builders/groundBuilder";
+import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
+import { PhysicsImpostor } from "@babylonjs/core/Physics/v1/physicsImpostor";
+import { Texture } from "@babylonjs/core/Materials/Textures/texture";
+import { type Scene } from '@babylonjs/core/scene';
 
 export const createGround = async (scene: Scene) => {
   const ground = CreateGround("ground", { width: 12.5, height: 12.5 }, scene);
