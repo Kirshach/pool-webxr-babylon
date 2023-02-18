@@ -1,16 +1,17 @@
-import { AxesViewer } from "@babylonjs/core/Debug/axesViewer";
-import { CannonJSPlugin } from "@babylonjs/core/Physics/v1/Plugins/cannonJSPlugin";
-import { Color4 } from '@babylonjs/core/Maths/math.color';
-import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder';
-import { DracoCompression } from "@babylonjs/core/Meshes/Compression/dracoCompression";
-import { Engine } from '@babylonjs/core/Engines/engine';
-import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera';
-import { PhysicsImpostor } from "@babylonjs/core/Physics/v1/physicsImpostor";
-import { Scene } from '@babylonjs/core/scene';
-import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator";
-import { Sound } from "@babylonjs/core/Audio/sound";
-import { Vector3 } from '@babylonjs/core/Maths/math.vector';
-import { WebXRDefaultExperience } from '@babylonjs/core/XR/webXRDefaultExperience';
+import {
+  AxesViewer,
+  CannonJSPlugin,
+  Color4,
+  CreateBox,
+  DracoCompression,
+  Engine,
+  PhysicsImpostor,
+  Scene,
+  ShadowGenerator,
+  Sound,
+  Vector3,
+  WebXRDefaultExperience
+} from "@babylonjs/core";
 
 import "@babylonjs/loaders/glTF"; // TODO: 667kB, need to tree-shake it
 
@@ -18,12 +19,12 @@ import * as CANNON_ES_NS from 'cannon-es';
 
 import myHeartIsHome from "./assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3?url";
 
-import { createPoolTable } from "./entities/pool-table";
+import { createCamera } from './entities/camera'
 import { createGround } from './entities/ground';
+import { createPoolTable } from "./entities/pool-table";
+import { createSpotLight } from './entities/spot-light';
 
-import { createLights } from './app/createLights';
-
-const toRadians = (angle: number) => (angle * Math.PI) / 180;
+import { toRadians } from "./shared/toRadians";
 
 declare global {
   var CANNON: typeof CANNON_ES_NS;
@@ -58,14 +59,7 @@ const scene = new Scene(engine);
 scene.enablePhysics(gravityVector, physicsPlugin);
 scene.clearColor = new Color4(0, 0, 0, 1);
 
-const camera = new FreeCamera(
-  "camera",
-  new Vector3(3, 1.65, 3),
-  scene
-);
-camera.target = new Vector3(0, 1, 0);
-camera.attachControl(canvas, false);
-camera.speed = 0.2;
+createCamera(scene, canvas);
 
 const box = CreateBox(
   'Test Box',
@@ -80,7 +74,7 @@ box.scaling.x = 2;
 box.position.set(-2, 2, -2);
 box.rotation.y = toRadians(45);
 
-const { spotLight } = createLights(scene);
+const { spotLight } = createSpotLight(scene);
 
 const table = await createPoolTable(scene);
 const ground = await createGround(scene);

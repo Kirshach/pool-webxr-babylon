@@ -1,9 +1,11 @@
-import { Color3 } from '@babylonjs/core/Maths/math.color';
-import { SpotLight } from '@babylonjs/core/Lights/spotLight'
-import { Vector3 } from '@babylonjs/core/Maths/math.vector';
-import { type Scene } from '@babylonjs/core/scene';
+import {
+  Color3,
+  SpotLight,
+  Vector3,
+  type Scene
+} from '@babylonjs/core';
 
-export const createLights = (scene: Scene) => {
+export const createSpotLight = (scene: Scene) => {
   const spotLight = new SpotLight(
     "spot_light",
     new Vector3(0, 6, 0),

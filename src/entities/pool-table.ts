@@ -1,6 +1,8 @@
-import { type Scene } from '@babylonjs/core/scene';
-import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
-import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import {
+  SceneLoader,
+  Vector3,
+  type Scene
+} from '@babylonjs/core';
 
 // TODO: utilize AVIF
 export const createPoolTable = (scene: Scene) => SceneLoader.ImportMeshAsync(
