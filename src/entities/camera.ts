@@ -13,5 +13,7 @@ export const createCamera = (scene: Scene, canvas: HTMLCanvasElement) => {
   camera.setTarget(new Vector3(0, 1, 0));
   camera.attachControl(canvas);
   camera.speed = 0.2;
+  camera.minZ = 0.1;
+
   return camera;
 };

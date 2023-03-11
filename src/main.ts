@@ -10,21 +10,21 @@ import {
   ShadowGenerator,
   Sound,
   Vector3,
-  WebXRDefaultExperience
+  WebXRDefaultExperience,
 } from "@babylonjs/core";
 
 import "@babylonjs/loaders/glTF"; // TODO: 667kB, need to tree-shake it
 
-import * as CANNON_ES_NS from 'cannon-es';
+import * as CANNON_ES_NS from "cannon-es";
 
 import myHeartIsHome from "./assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3?url";
 
-import { createCamera } from './entities/camera'
-import { createGround } from './entities/ground';
+import { createCamera } from "./entities/camera";
+import { createGround } from "./entities/ground";
 import { createPoolTable } from "./entities/pool-table";
-import { createSpotLight } from './entities/spot-light';
+import { createSpotLight } from "./entities/spot-light";
 
-import { toRadians } from "./shared/toRadians";
+import { toRadians } from "./shared/lib/toRadians";
 
 declare global {
   var CANNON: typeof CANNON_ES_NS;
@@ -62,14 +62,14 @@ scene.clearColor = new Color4(0, 0, 0, 1);
 createCamera(scene, canvas);
 
 const box = CreateBox(
-  'Test Box',
+  "Test Box",
   { faceColors: Array.from({ length: 6 }).map(() => new Color4(0.4, 0, 0, 0)) },
   scene
 );
-box.physicsImpostor = new PhysicsImpostor(
-  box,
-  PhysicsImpostor.BoxImpostor,
-  { mass: 1, restitution: 0.9 });
+box.physicsImpostor = new PhysicsImpostor(box, PhysicsImpostor.BoxImpostor, {
+  mass: 1,
+  restitution: 0.9,
+});
 box.scaling.x = 2;
 box.position.set(-2, 2, -2);
 box.rotation.y = toRadians(45);
@@ -81,12 +81,18 @@ const ground = await createGround(scene);
 
 // shadows
 const shadowGenerator = new ShadowGenerator(2048, spotLight, true);
-shadowGenerator.addShadowCaster(table, true /* check if this parameter changes anything */);
+shadowGenerator.addShadowCaster(
+  table,
+  true /* check if this parameter changes anything */
+);
 shadowGenerator.usePoissonSampling = true;
 
 // create gizmos
-if (process.env.NODE_ENV === 'development') {
-  Promise.all([import('@babylonjs/core/Gizmos/gizmoManager'), import('@babylonjs/core/Gizmos/lightGizmo')]).then(([{ GizmoManager }, { LightGizmo }]) => {
+if (process.env.NODE_ENV === "development") {
+  Promise.all([
+    import("@babylonjs/core/Gizmos/gizmoManager"),
+    import("@babylonjs/core/Gizmos/lightGizmo"),
+  ]).then(([{ GizmoManager }, { LightGizmo }]) => {
     const gizmoLight = new LightGizmo();
     gizmoLight.light = spotLight;
     gizmoLight.scaleRatio = 2;
@@ -96,31 +102,27 @@ if (process.env.NODE_ENV === 'development') {
     gizmoManager.rotationGizmoEnabled = true;
     gizmoManager.usePointerToAttachGizmos = false;
     gizmoManager.attachToMesh(gizmoLight.attachedMesh);
-  })
+  });
 }
 
 WebXRDefaultExperience.CreateAsync(scene, {
   floorMeshes: [ground],
   optionalFeatures: true,
 }).then((xrExperience) => {
-
-  console.log(xrExperience)
+  console.log(xrExperience);
 
   // run the loop
   engine.runRenderLoop(() => {
-    scene.render()
+    scene.render();
   });
 
   window.addEventListener("resize", () => engine.resize());
 
   // add background music
-  new Sound(
-    "Mark Woollard - My Heart Is Home",
-    myHeartIsHome,
-    scene,
-    null,
-    { loop: true, autoplay: true }
-  );
+  new Sound("Mark Woollard - My Heart Is Home", myHeartIsHome, scene, null, {
+    loop: true,
+    autoplay: true,
+  });
 
   // TODO: move to a dev-time button
   if (process.env.NODE_ENV === "development") {

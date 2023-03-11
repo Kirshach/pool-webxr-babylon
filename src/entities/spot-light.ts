@@ -1,11 +1,7 @@
-import {
-  Color3,
-  SpotLight,
-  Vector3,
-  type Scene
-} from '@babylonjs/core';
+import { Color3, SpotLight, Vector3, type Scene } from "@babylonjs/core";
 
 export const createSpotLight = (scene: Scene) => {
+  // new HemisphericLight("hemi", Vector3.Zero(), scene);
   const spotLight = new SpotLight(
     "spot_light",
     new Vector3(0, 6, 0),
