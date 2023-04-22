@@ -1,11 +1,11 @@
-import { defineConfig } from 'vite';
 import { dedup, draco, prune } from "@gltf-transform/functions";
-import gltf from 'vite-plugin-gltf';
-import mkcert from 'vite-plugin-mkcert';
+import { defineConfig } from "vite";
+import gltf from "vite-plugin-gltf";
+import mkcert from "vite-plugin-mkcert";
 
 export default defineConfig({
   build: {
-    target: 'esnext',
+    target: "esnext",
   },
   server: { https: true },
   plugins: [
@@ -18,7 +18,7 @@ export default defineConfig({
         dedup(),
         // compress mesh geometry
         draco({}),
-      ]
-    })
+      ],
+    }),
   ],
 });

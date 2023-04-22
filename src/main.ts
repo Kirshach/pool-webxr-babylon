@@ -1,36 +1,19 @@
 import {
   AxesViewer,
-  CannonJSPlugin,
-  Color4,
-  CreateBox,
   DracoCompression,
-  Engine,
-  PhysicsImpostor,
-  Scene,
   ShadowGenerator,
   Sound,
-  Vector3,
   WebXRDefaultExperience,
 } from "@babylonjs/core";
 
 import "@babylonjs/loaders/glTF"; // TODO: 667kB, need to tree-shake it
 
-import * as CANNON_ES_NS from "cannon-es";
-
 import myHeartIsHome from "./assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3?url";
 
-import { createCamera } from "./entities/camera";
 import { createGround } from "./entities/ground";
 import { createPoolTable } from "./entities/pool-table";
 import { createSpotLight } from "./entities/spot-light";
-
-import { toRadians } from "./shared/lib/toRadians";
-
-declare global {
-  var CANNON: typeof CANNON_ES_NS;
-}
-
-globalThis.CANNON = CANNON_ES_NS;
+import { configureExperience } from "./features/configure-experience/configure-experience";
 
 DracoCompression.Configuration = {
   decoder: {
@@ -50,17 +33,7 @@ if (!canvas) {
   );
 }
 
-const engine = new Engine(canvas, true, {});
-
-const physicsPlugin = new CannonJSPlugin();
-const gravityVector = new Vector3(0, -9.81, 0);
-
-const scene = new Scene(engine);
-scene.enablePhysics(gravityVector, physicsPlugin);
-scene.clearColor = new Color4(0, 0, 0, 1);
-
-createCamera(scene, canvas);
-
+const { scene, engine } = await configureExperience(canvas);
 const { spotLight } = createSpotLight(scene);
 
 const table = await createPoolTable(scene);
