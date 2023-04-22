@@ -8,7 +8,7 @@ import {
   Vector3,
 } from "@babylonjs/core";
 
-// TODO: utilize AVIF
+// TODO: utilize lightweight texture
 export const createPoolTable = (scene: Scene) =>
   SceneLoader.ImportMeshAsync(
     "SM_PoolTable01_M_PoolTable01_0",
@@ -16,8 +16,10 @@ export const createPoolTable = (scene: Scene) =>
     "scene.gltf",
     scene
   ).then(({ meshes: [, table] }) => {
+    // remove mesh from root node
     table.setParent(null);
 
+    // scale down
     const vertexData = table.getVerticesData(VertexBuffer.PositionKind)!;
 
     for (let i = 0; i < vertexData.length; i++) {
@@ -25,10 +27,12 @@ export const createPoolTable = (scene: Scene) =>
     }
 
     table.setVerticesData(VertexBuffer.PositionKind, vertexData);
+    table.checkCollisions = true;
 
     table.position.set(0.62, 0, 0);
     table.rotate(new Vector3(1, 0, 0), Math.PI / 2);
 
+    // add physics
     const tableAggregate = new PhysicsAggregate(
       table,
       PhysicsShapeType.MESH,

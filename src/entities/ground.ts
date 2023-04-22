@@ -9,6 +9,7 @@ import {
 
 export const createGround = async (scene: Scene) => {
   const ground = CreateGround("ground", { width: 12.5, height: 12.5 }, scene);
+  ground.checkCollisions = true;
   const groundMaterial = new PBRMaterial("ground_material", scene);
 
   [
