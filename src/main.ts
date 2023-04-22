@@ -1,6 +1,9 @@
 import {
   AxesViewer,
   DracoCompression,
+  MeshBuilder,
+  PhysicsAggregate,
+  PhysicsShapeType,
   ShadowGenerator,
   Sound,
   WebXRDefaultExperience,
@@ -36,8 +39,8 @@ if (!canvas) {
 const { scene, engine } = await configureExperience(canvas);
 const { spotLight } = createSpotLight(scene);
 
-const table = await createPoolTable(scene);
-const ground = await createGround(scene);
+const { table } = await createPoolTable(scene);
+const { ground } = await createGround(scene);
 
 // shadows
 const shadowGenerator = new ShadowGenerator(2048, spotLight, true);
@@ -64,6 +67,20 @@ if (process.env.NODE_ENV === "development") {
     gizmoManager.attachToMesh(gizmoLight.attachedMesh);
   });
 }
+
+var sphere = MeshBuilder.CreateSphere(
+  "sphere",
+  { diameter: 0.05, segments: 32 },
+  scene
+);
+sphere.position.set(1.3, 1.5, 0.6);
+
+var sphereAggregate = new PhysicsAggregate(
+  sphere,
+  PhysicsShapeType.SPHERE,
+  { mass: 1, restitution: 0.75 },
+  scene
+);
 
 WebXRDefaultExperience.CreateAsync(scene, {
   floorMeshes: [ground],

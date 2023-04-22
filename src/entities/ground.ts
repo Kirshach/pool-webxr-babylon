@@ -1,7 +1,8 @@
 import {
   CreateGround,
   PBRMaterial,
-  PhysicsImpostor,
+  PhysicsAggregate,
+  PhysicsShapeType,
   Texture,
   type Scene,
 } from "@babylonjs/core";
@@ -38,12 +39,12 @@ export const createGround = async (scene: Scene) => {
   ground.material = groundMaterial;
   ground.receiveShadows = true;
 
-  ground.physicsImpostor = new PhysicsImpostor(
+  const groundAggregate = new PhysicsAggregate(
     ground,
-    PhysicsImpostor.BoxImpostor,
+    PhysicsShapeType.BOX,
     { mass: 0, restitution: 0.9 },
     scene
   );
 
-  return ground;
+  return { ground, groundAggregate };
 };
