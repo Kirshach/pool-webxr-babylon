@@ -4,10 +4,11 @@ import { SceneLoader, type Scene } from "@babylonjs/core";
 export const createPoolTable = (scene: Scene) =>
   SceneLoader.ImportMeshAsync(
     "",
-    "/assets/pooltable_2/",
+    "/assets/pooltable/",
     "scene.gltf",
     scene
   ).then(({ meshes: [table] }) => {
-    table.showBoundingBox = true;
+    table.scaling.set(0.01, 0.01, 0.01);
+    table.position.set(0, 0.85, 0);
     return table;
   });

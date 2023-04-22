@@ -61,19 +61,6 @@ scene.clearColor = new Color4(0, 0, 0, 1);
 
 createCamera(scene, canvas);
 
-const box = CreateBox(
-  "Test Box",
-  { faceColors: Array.from({ length: 6 }).map(() => new Color4(0.4, 0, 0, 0)) },
-  scene
-);
-box.physicsImpostor = new PhysicsImpostor(box, PhysicsImpostor.BoxImpostor, {
-  mass: 1,
-  restitution: 0.9,
-});
-box.scaling.x = 2;
-box.position.set(-2, 2, -2);
-box.rotation.y = toRadians(45);
-
 const { spotLight } = createSpotLight(scene);
 
 const table = await createPoolTable(scene);
