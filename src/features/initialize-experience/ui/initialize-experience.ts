@@ -47,6 +47,10 @@ export const initializeExperience = async (canvas: HTMLCanvasElement) => {
 
   createCamera(scene, canvas);
 
+  canvas.addEventListener("click", () => {
+    canvas.requestPointerLock?.();
+  });
+
   const { spotLight } = createSpotLight(scene);
   addDevtimeFeatures(scene, [spotLight]);
 
