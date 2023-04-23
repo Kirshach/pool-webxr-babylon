@@ -1,5 +1,4 @@
 import {
-  AxesViewer,
   Color4,
   DracoCompression,
   Engine,
@@ -76,44 +75,42 @@ export const initializeExperience = async (canvas: HTMLCanvasElement) => {
   shadowGenerator.usePoissonSampling = true;
 
   // WebXR
-  WebXRDefaultExperience.CreateAsync(scene, {
+  const xrExperience = await WebXRDefaultExperience.CreateAsync(scene, {
     floorMeshes: [ground],
     optionalFeatures: true,
-  }).then((xrExperience) => {
-    console.log(xrExperience);
+    disableTeleportation: true,
+  });
 
-    // run the loop
-    engine.runRenderLoop(() => {
-      scene.render();
-    });
+  // Enable smooth movement with the VR controllers
+  xrExperience.input.onControllerAddedObservable.add((controller) => {
+    controller.onMotionControllerInitObservable.add((motionController) => {
+      if (motionController.handedness !== "left") return;
 
-    window.addEventListener("resize", () => engine.resize());
+      const thumbstick = motionController.getComponent(
+        "xr-standard-thumbstick"
+      );
 
-    // add background music
-    new Sound("Mark Woollard - My Heart Is Home", myHeartIsHome, scene, null, {
-      loop: true,
-      autoplay: true,
-    });
-
-    // TODO: move to a dev-time button
-    if (process.env.NODE_ENV === "development") {
-      new AxesViewer(scene, 0.35);
-      import("@babylonjs/inspector").then(() => {
-        Object.defineProperty(window, "debug", {
-          get() {
-            return this._debug;
-          },
-          set(v: boolean) {
-            this._debug = v;
-            if (v) {
-              scene.debugLayer.show({ overlay: true });
-            } else {
-              scene.debugLayer.hide();
-            }
-          },
+      if (thumbstick) {
+        thumbstick.onAxisValueChangedObservable.add((axes) => {
+          xrExperience.baseExperience.camera.position.addInPlace(
+            new Vector3(axes.y, 0, axes.x).scale(0.1)
+          );
         });
-      });
-    }
+      }
+    });
+  });
+
+  // run the loop
+  engine.runRenderLoop(() => {
+    scene.render();
+  });
+
+  window.addEventListener("resize", () => engine.resize());
+
+  // add background music
+  new Sound("Mark Woollard - My Heart Is Home", myHeartIsHome, scene, null, {
+    loop: true,
+    autoplay: true,
   });
 
   return { scene, engine };
