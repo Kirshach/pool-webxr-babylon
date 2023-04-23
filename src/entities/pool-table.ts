@@ -1,5 +1,6 @@
 import {
   Mesh,
+  MeshBuilder,
   SceneLoader,
   PhysicsAggregate,
   PhysicsShapeType,
@@ -28,7 +29,6 @@ export const createPoolTable = (scene: Scene) =>
     }
 
     table.setVerticesData(VertexBuffer.PositionKind, vertexData);
-    table.checkCollisions = true;
 
     // Create a parent node for the table
     const tableParent = new TransformNode("tableParent", scene);
@@ -41,10 +41,10 @@ export const createPoolTable = (scene: Scene) =>
 
     // Rotate the table mesh
     table.rotate(new Vector3(1, 0, 0), Math.PI / 2);
-    table.position.set(localCenter.x, localCenter.y, 0);
+    table.position.set(localCenter.x, 0, 0);
 
     // Center the table in the scene by adjusting the parent node's position
-    tableParent.position.set(0, -localCenter.y, 0);
+    tableParent.position.set(0, localCenter.y, 0);
 
     // Add physics
     const tableAggregate = new PhysicsAggregate(
@@ -53,6 +53,17 @@ export const createPoolTable = (scene: Scene) =>
       { mass: 0, friction: 1, mesh: table as Mesh },
       scene
     );
+
+    // Check camera collisions
+    const boxMesh = MeshBuilder.CreateTiledBox(
+      "boxMesh",
+      { height: 1.7, width: 2.8, depth: 1.5, tileSize: 100 },
+      scene
+    );
+    boxMesh.position.set(0, 0, 0.03);
+    boxMesh.checkCollisions = true;
+    boxMesh.isVisible = false;
+    boxMesh.collisionMask = 2;
 
     return {
       table,

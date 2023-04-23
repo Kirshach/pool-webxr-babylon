@@ -3,6 +3,7 @@ import {
   DracoCompression,
   Engine,
   HavokPlugin,
+  Quaternion,
   Scene,
   ShadowGenerator,
   Sound,
@@ -40,6 +41,7 @@ export const initializeExperience = async (canvas: HTMLCanvasElement) => {
 
   const scene = new Scene(engine);
   scene.collisionsEnabled = true;
+  scene.gravity = new Vector3(0, -0.15, 0);
 
   const havokInstance = await HavokPhysics();
   const havokPlugin = new HavokPlugin(true, havokInstance);
@@ -61,7 +63,7 @@ export const initializeExperience = async (canvas: HTMLCanvasElement) => {
     createGround(scene),
   ]);
 
-  const balls = Array.from({ length: 10 }).map(() => createBall(scene));
+  const balls = Array.from({ length: 100 }).map(() => createBall(scene));
 
   // shadows
   const shadowGenerator = new ShadowGenerator(2048, spotLight, true);
@@ -92,9 +94,12 @@ export const initializeExperience = async (canvas: HTMLCanvasElement) => {
 
       if (thumbstick) {
         thumbstick.onAxisValueChangedObservable.add((axes) => {
-          xrExperience.baseExperience.camera.position.addInPlace(
-            new Vector3(axes.y, 0, axes.x).scale(0.1)
-          );
+          // TODO: wtf is that and why do I have to rotate it?
+          const vec = new Vector3(-axes.y, 0, -axes.x).scale(0.05);
+          const quat = Quaternion.FromEulerAngles(0, 90, 0);
+          let vec2 = Vector3.Zero();
+          vec.rotateByQuaternionToRef(quat, vec2);
+          xrExperience.baseExperience.camera.position.addInPlace(vec2);
         });
       }
     });
