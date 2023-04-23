@@ -24,6 +24,7 @@ import { createPoolTable } from "../../../entities/pool-table";
 import { createGround } from "../../../entities/ground";
 
 import myHeartIsHome from "../../../assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3";
+import { createBall } from "../../../entities/ball";
 
 DracoCompression.Configuration = {
   decoder: {
@@ -61,12 +62,17 @@ export const initializeExperience = async (canvas: HTMLCanvasElement) => {
     createGround(scene),
   ]);
 
+  const balls = Array.from({ length: 10 }).map(() => createBall(scene));
+
   // shadows
   const shadowGenerator = new ShadowGenerator(2048, spotLight, true);
   shadowGenerator.addShadowCaster(
     table,
     true /* check if this parameter changes anything */
   );
+  balls.forEach((ball) => {
+    shadowGenerator.addShadowCaster(ball, true);
+  });
   shadowGenerator.usePoissonSampling = true;
 
   // WebXR
@@ -110,6 +116,5 @@ export const initializeExperience = async (canvas: HTMLCanvasElement) => {
     }
   });
 
-  console.log(scene.gravity);
   return { scene, engine };
 };

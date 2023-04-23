@@ -6,6 +6,7 @@ import {
   VertexBuffer,
   Scene,
   Vector3,
+  TransformNode,
 } from "@babylonjs/core";
 
 export const createPoolTable = (scene: Scene) =>
@@ -17,6 +18,7 @@ export const createPoolTable = (scene: Scene) =>
   ).then(({ meshes: [, table] }) => {
     // remove mesh from root node
     table.setParent(null);
+    table.receiveShadows = true;
 
     // scale down
     const vertexData = table.getVerticesData(VertexBuffer.PositionKind)!;
@@ -28,29 +30,23 @@ export const createPoolTable = (scene: Scene) =>
     table.setVerticesData(VertexBuffer.PositionKind, vertexData);
     table.checkCollisions = true;
 
-    // update the bounding info after scaling the mesh
-    table.refreshBoundingInfo();
+    // Create a parent node for the table
+    const tableParent = new TransformNode("tableParent", scene);
+    table.setParent(tableParent);
 
-    // calculate the bounding box center in local space
+    // Calculate the bounding box center in local space
+    table.refreshBoundingInfo();
     const boundingBox = table.getBoundingInfo().boundingBox;
     const localCenter = boundingBox.center.clone();
 
-    // update the mesh's geometry to be centered around the local origin
-    const positions = table.getVerticesData(VertexBuffer.PositionKind)!;
-
-    for (let i = 0; i < positions.length; i += 3) {
-      positions[i] -= localCenter.x;
-      positions[i + 1] -= localCenter.y;
-      positions[i + 2] -= localCenter.z;
-    }
-
-    table.updateVerticesData(VertexBuffer.PositionKind, positions);
-    table.refreshBoundingInfo();
-
-    table.position.set(0.62, 0, 0);
+    // Rotate the table mesh
     table.rotate(new Vector3(1, 0, 0), Math.PI / 2);
+    table.position.set(localCenter.x, localCenter.y, 0);
 
-    // add physics
+    // Center the table in the scene by adjusting the parent node's position
+    tableParent.position.set(0, -localCenter.y, 0);
+
+    // Add physics
     const tableAggregate = new PhysicsAggregate(
       table,
       PhysicsShapeType.MESH,
