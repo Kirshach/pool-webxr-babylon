@@ -54,7 +54,7 @@ export const createPoolTable = (scene: Scene) =>
     const tableAggregate = new PhysicsAggregate(
       table,
       PhysicsShapeType.MESH,
-      { mass: 0, friction: 1, mesh: table },
+      { mass: 0, friction: 1, mesh: table as Mesh },
       scene
     );
 

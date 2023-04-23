@@ -2,12 +2,13 @@ import {
   AxesViewer,
   Color4,
   DracoCompression,
+  Engine,
   HavokPlugin,
   Scene,
   ShadowGenerator,
   Sound,
   Vector3,
-  WebGPUEngine,
+  // WebGPUEngine,
   WebXRDefaultExperience,
 } from "@babylonjs/core";
 
@@ -33,8 +34,9 @@ DracoCompression.Configuration = {
 };
 
 export const initializeExperience = async (canvas: HTMLCanvasElement) => {
-  const engine = new WebGPUEngine(canvas, { antialias: true });
-  await engine.initAsync();
+  // const engine = new WebGPUEngine(canvas, { antialias: true });
+  // await engine.initAsync();
+  const engine = new Engine(canvas, true);
 
   const scene = new Scene(engine);
   scene.collisionsEnabled = true;
@@ -67,7 +69,7 @@ export const initializeExperience = async (canvas: HTMLCanvasElement) => {
   );
   shadowGenerator.usePoissonSampling = true;
 
-  // WebXP
+  // WebXR
   WebXRDefaultExperience.CreateAsync(scene, {
     floorMeshes: [ground],
     optionalFeatures: true,
