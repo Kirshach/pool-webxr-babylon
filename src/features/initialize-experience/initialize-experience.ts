@@ -19,14 +19,14 @@ import "@babylonjs/loaders/glTF"; // TODO: 667kB, tree-shake it?
 // @ts-ignore
 import HavokPhysics from "@babylonjs/havok";
 
-import { addDevtimeFeatures } from "../../add-devtime-features";
-import { createCamera } from "../../../entities/camera";
-import { createSpotLight } from "../../../entities/spot-light";
-import { createPoolTable } from "../../../entities/pool-table";
-import { createGround } from "../../../entities/ground";
+import { addDevtimeFeatures } from "../add-devtime-features";
+import { createCamera } from "../../entities/camera";
+import { createSpotLight } from "../../entities/spot-light";
+import { createPoolTable } from "../../entities/pool-table";
+import { createGround } from "../../entities/ground";
 
-import myHeartIsHome from "../../../assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3";
-import { createBall } from "../../../entities/ball";
+import myHeartIsHome from "../../assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3";
+import { createBall } from "../../entities/ball";
 
 DracoCompression.Configuration = {
   decoder: {
@@ -36,7 +36,16 @@ DracoCompression.Configuration = {
   },
 };
 
-export const initializeExperience = async (canvas: HTMLCanvasElement) => {
+export const initializeExperience = async () => {
+  const canvas = document.getElementById("canvas");
+
+  if (!canvas) {
+    throw new Error("Canvas not found");
+  } else if (!(canvas instanceof HTMLCanvasElement)) {
+    throw new Error(
+      '"#canvas" element is not an instance of HTMLCanvasElement'
+    );
+  }
   const engine = navigator.gpu
     ? new WebGPUEngine(canvas, {
         antialias: true,
@@ -201,5 +210,6 @@ export const initializeExperience = async (canvas: HTMLCanvasElement) => {
   });
 
   engine.hideLoadingUI();
-  return { scene, engine };
+
+  return { scene, engine, canvas };
 };

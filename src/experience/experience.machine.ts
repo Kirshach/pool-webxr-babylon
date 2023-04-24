@@ -1,35 +1,37 @@
-import { createMachine, interpret } from "xstate";
+import { createMachine } from "xstate";
+
+import { initializeExperience } from "../features/initialize-experience";
 
 export const experienceMachine = createMachine(
   {
-    /** @xstate-layout N4IgpgJg5mDOIC5RgB4AcwCcCWYB2AxmAHQA2A9gIYTZ5QDEAMgPICCAIgKLsDaADAF1EoNOVjYALtnJ5hIFIgCMAdkXFFATg0AmRQA5lAVgA0IAJ6INfYgGZlAFg177Dxbr4b7AXy+nUGHHwiMioaOiY2dgBJADkAcQB9TgAlZOZk-iEkEFFxKRk5BQRFGw1bKwA2bRNzRABaRWsS7T03Ry0OvQqfP3QsXEISCmpaKASAM0psUkh6ZM4AFWSATQSWDli4zLlcyWlZbKLFe2s+KpqLBDqDYgqK5Q0Kg3aOjR7wPsDB4lo9ylJsAAvUb0WJRBZRViMKIALW422yu3yB1ARXsrWIekq1VMlystiMPl8IDw5AgcDk-n6QTAOzEewKh3qFVx9RUhnU90eBkM7ypX2CwzCUDpeX2hUQ9m0rIQ+LsvOJ-IGgtCowmUxmEFFDJR8kQNm02lsFQNrRxtSujXUprary0XT5n2VJF+Un+QNG2uREoQNhsFWIfHsTyMMrlhMVTppPzwCQoACN45cRPTvUyEBVDEb0XoWm4LpZrPKiV4gA */
+    /** @xstate-layout N4IgpgJg5mDOIC5RgB4AcwCcCWYB2AxmAHQA2A9gIYTZ5QDEE5eJtAbuQNYmoY75EyVGnQTtyBSgBdszANoAGALqKliUGnKxsM5upApEAWgCcAJmIKAbAGYAHOYDsCuwFZXNswEYANCACeiF6OjsQ2ACxmJnZ2wd6ONh4Avkl+vFi4hCQU1LQMWJjkmMRopNIAZkUAtsTp-FlCuaLikrp4qqr6mtpt+oYIXiauxFbmXjF2CgrOrnZmfoEIRjZexK7h4Y7rJom261bhKWnoGQLZwnkA+uWU2KSQ9ABKAKIAKo8AmpcAMgDyAIIAEQAkgA5ADinSQIG6OlkeD6QXCCksVjMrhcURMB3CXnmAWMeNWCh2NjRMVcji8uxSqRAeHIEDg+jqmSIXS0cL00P6Ri8VhRg3CVkckwxZkc2JsC2MZhca1JoysOJsCglR3AJ3qghyIigHJ68MRSy8eOIQpFYrVktsMqWIpGCmpUzs4QcCRMGtZZ0aTIgBq5CJ5iA2wzsZKGmMctnDdv5JjCm1GpqpZMldi9WrZ5yaUGut3u-uhsN6wYQbosKzcjm8EtiJl8BKWNhslg2W08uKsXlc2NctKSQA */
     id: "experience",
     initial: "loading",
+    predictableActionArguments: true,
+
     states: {
       loading: {
-        on: { LOADED: "initializing", LOADING_ERROR: "loading_failed" },
+        invoke: {
+          src: "initiate_loading",
+          onDone: "loaded",
+          onError: "loading_failed",
+        },
       },
+      loaded: {},
       loading_failed: { on: { RETRY_LOADING: "loading" } },
-      initializing: { on: { INITIALIZED: "in_lobby" } },
-      in_lobby: {},
     },
+
     schema: {
-      events: {} as
-        | { type: "LOADED" }
-        | { type: "INITIALIZED" }
-        | { type: "LOADING_ERROR" }
-        | { type: "RETRY_LOADING" },
+      events: {} as { type: "RETRY_LOADING" },
+      services: {} as { initiate_loading: { data: {} } },
     },
   },
+
   {
-    actions: {
-      LOADED: () => {
-        console.log("State change: experience loaded");
+    services: {
+      initiate_loading: async (_context) => {
+        await initializeExperience();
       },
     },
   }
 );
-
-interpret(experienceMachine)
-  .onTransition((state) => console.log(state.value))
-  .start();

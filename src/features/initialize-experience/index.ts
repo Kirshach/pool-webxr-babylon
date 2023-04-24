@@ -1,1 +1,1 @@
-export { initializeExperience } from "./ui/initialize-experience";
+export { initializeExperience } from "./initialize-experience";

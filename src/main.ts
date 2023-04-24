@@ -1,11 +1,8 @@
-import { initializeExperience } from "./features/initialize-experience/ui/initialize-experience";
+import { interpret } from "xstate";
+import { experienceMachine } from "./experience/experience.machine";
 
-const canvas = document.getElementById("canvas");
-
-if (!canvas) {
-  throw new Error("Canvas not found");
-} else if (!(canvas instanceof HTMLCanvasElement)) {
-  throw new Error('"#canvas" element is not an instance of HTMLCanvasElement');
-}
-
-await initializeExperience(canvas);
+interpret(experienceMachine)
+  .onTransition((state) =>
+    console.info("Experience Machine State Update: ", state.value)
+  )
+  .start();
