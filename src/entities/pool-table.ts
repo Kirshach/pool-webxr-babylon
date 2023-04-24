@@ -10,10 +10,25 @@ import {
   TransformNode,
 } from "@babylonjs/core";
 
+import {
+  supportsAvif,
+  supportsWebP,
+} from "../shared/lib/is-image-format-supported";
+
+const getTableFolder = () => {
+  if (supportsAvif) {
+    return "/assets/pooltable-avif/";
+  }
+  if (supportsWebP) {
+    return "/assets/pooltable-webp/";
+  }
+  return "/assets/pooltable-jpg/";
+};
+
 export const createPoolTable = (scene: Scene) =>
   SceneLoader.ImportMeshAsync(
     "SM_PoolTable01_M_PoolTable01_0",
-    "/assets/pooltable/",
+    getTableFolder(),
     "scene.gltf",
     scene
   ).then(({ meshes: [, table] }) => {

@@ -14,15 +14,15 @@ export const createGround = async (scene: Scene) => {
 
   [
     (groundMaterial.albedoTexture = new Texture(
-      "/assets/ground-textures/diff.jpg",
+      "/assets/ground-textures-jpg/diff.jpg",
       scene
     )),
     (groundMaterial.metallicTexture = new Texture(
-      "/assets/ground-textures/arm.jpg",
+      "/assets/ground-textures-jpg/arm.jpg",
       scene
     )),
     (groundMaterial.bumpTexture = new Texture(
-      "/assets/ground-textures/normal.jpg",
+      "/assets/ground-textures-jpg/normal.jpg",
       scene
     )),
   ].forEach((texture) => {
