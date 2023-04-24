@@ -10,8 +10,8 @@ import {
   Vector3,
   PhysicsRaycastResult,
   Ray,
-  // WebGPUEngine,
   WebXRDefaultExperience,
+  WebGPUEngine,
 } from "@babylonjs/core";
 
 import "@babylonjs/loaders/glTF"; // TODO: 667kB, tree-shake it?
@@ -37,9 +37,15 @@ DracoCompression.Configuration = {
 };
 
 export const initializeExperience = async (canvas: HTMLCanvasElement) => {
-  // const engine = new WebGPUEngine(canvas, { antialias: true });
-  // await engine.initAsync();
-  const engine = new Engine(canvas, true);
+  const engine = navigator.gpu
+    ? new WebGPUEngine(canvas, {
+        antialias: true,
+      })
+    : new Engine(canvas, true);
+
+  if (navigator.gpu) {
+    await (engine as WebGPUEngine).initAsync();
+  }
 
   const scene = new Scene(engine);
   scene.collisionsEnabled = true;
@@ -73,6 +79,7 @@ export const initializeExperience = async (canvas: HTMLCanvasElement) => {
     table,
     true /* check if this parameter changes anything */
   );
+  shadowGenerator.bias = 0.001;
   balls.forEach((ball) => {
     shadowGenerator.addShadowCaster(ball, true);
   });
