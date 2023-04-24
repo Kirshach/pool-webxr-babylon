@@ -47,6 +47,8 @@ export const initializeExperience = async (canvas: HTMLCanvasElement) => {
     await (engine as WebGPUEngine).initAsync();
   }
 
+  engine.displayLoadingUI();
+
   const scene = new Scene(engine);
   scene.collisionsEnabled = true;
   scene.gravity = new Vector3(0, -0.15, 0);
@@ -198,5 +200,6 @@ export const initializeExperience = async (canvas: HTMLCanvasElement) => {
     autoplay: true,
   });
 
+  engine.hideLoadingUI();
   return { scene, engine };
 };
