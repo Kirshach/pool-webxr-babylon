@@ -4,11 +4,31 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/reset.css" />
     <link rel="stylesheet" href="/styles.css" />
     <script type="module" src="/src/main.ts"></script>
     <title>Pool-WebXR Babylon.js</title>
   </head>
   <body>
-    <canvas id="canvas"></div>
+    <h1 class="visually-hidden">
+      Play Pool in Virtual Reality! (or PC. or mobile)
+    </h1>
+    <canvas id="canvas"></canvas>
+    <dialog id="retry-loading-screen-dialog">
+      <form>
+        <h2>
+          An unexpected error
+          <pre>occured :(</pre>
+        </h2>
+        <p id="retry-loading-screen-dialog__error-description">
+          If the problem persists, and you want us to improve the app's user
+          experience, feel free to report this error to us:
+        </p>
+        <p id="retry-loading-error-dialog__message-stack"></p>
+        <button id="retry-loading-error-dialog__retry-button" type="button">
+          Try again
+        </button>
+      </form>
+    </dialog>
   </body>
 </html>

@@ -19,14 +19,14 @@ import "@babylonjs/loaders/glTF"; // TODO: 667kB, tree-shake it?
 // @ts-ignore
 import HavokPhysics from "@babylonjs/havok";
 
-import { addDevtimeFeatures } from "../add-devtime-features";
-import { createCamera } from "../../entities/camera";
-import { createSpotLight } from "../../entities/spot-light";
-import { createPoolTable } from "../../entities/pool-table";
-import { createGround } from "../../entities/ground";
+import { addDevtimeFeatures } from "../../../../features/add-devtime-features";
+import { createCamera } from "../../../../entities/camera";
+import { createSpotLight } from "../../../../entities/spot-light";
+import { createPoolTable } from "../../../../entities/pool-table";
+import { createGround } from "../../../../entities/ground";
 
-import myHeartIsHome from "../../assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3";
-import { createBall } from "../../entities/ball";
+import myHeartIsHome from "../../../../assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3";
+import { createBall } from "../../../../entities/ball";
 
 DracoCompression.Configuration = {
   decoder: {

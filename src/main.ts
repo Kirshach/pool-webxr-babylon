@@ -1,7 +1,6 @@
-import { interpret } from "xstate";
-import { experienceMachine } from "./experience/experience.machine";
+import { experienceService } from "./machines/experience";
 
-interpret(experienceMachine)
+experienceService
   .onTransition((state) =>
     console.info("Experience Machine State Update: ", state.value)
   )
