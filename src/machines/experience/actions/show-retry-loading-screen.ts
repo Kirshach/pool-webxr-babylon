@@ -13,6 +13,7 @@ export const showRetryLoadingScreen = (
   const errorStackTrace = document.getElementById(
     "retry-loading-error-dialog__message-stack"
   ) as HTMLParagraphElement;
+  errorStackTrace.textContent = event + "\n" + event.data.stack;
 
   const retryButton = document.getElementById(
     "retry-loading-error-dialog__retry-button"
@@ -20,8 +21,6 @@ export const showRetryLoadingScreen = (
   retryButton.addEventListener("click", () => {
     experienceService.send({ type: "RETRY_LOADING" });
   });
-
-  errorStackTrace.textContent = event + "\n" + event.data.stack;
 
   dialog.showModal();
 };

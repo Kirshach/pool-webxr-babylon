@@ -45,6 +45,10 @@ body {
   box-shadow: 5px 5px 30px rgba(255, 255, 255, 0.15),
     inset 30px 30px 60px rgba(0, 0, 0, 0);
 
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.4);
+  }
+
   & form {
     padding: 2rem;
     width: 100%;
