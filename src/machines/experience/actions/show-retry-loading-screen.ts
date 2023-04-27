@@ -22,5 +22,8 @@ export const showRetryLoadingScreen = (
     experienceService.send({ type: "RETRY_LOADING" });
   });
 
+  dialog.addEventListener("cancel", (e) => {
+    e.preventDefault();
+  });
   dialog.showModal();
 };
