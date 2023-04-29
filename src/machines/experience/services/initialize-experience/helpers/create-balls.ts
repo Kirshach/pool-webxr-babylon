@@ -13,22 +13,23 @@ const createBall = (scene: Scene, count: number, shape: PhysicsShapeSphere) => {
     segments: 32,
   });
 
-  ball.position.set(Math.random() * 1.5 - 0.5, 1, Math.random() - 0.5);
+  ball.position.set(Math.random() * 1.5 - 0.5, 0.837, Math.random() - 0.5);
 
   const ballBody = new PhysicsBody(
     ball,
     PhysicsMotionType.DYNAMIC,
-    false,
+    true,
     scene
   );
   ballBody.shape = shape;
+  ballBody.setMassProperties({ mass: 10 });
 
   return ball;
 };
 
 export const createBalls = (scene: Scene) => {
   const ballPhysicsShape = new PhysicsShapeSphere(Vector3.Zero(), 0.035, scene);
-  ballPhysicsShape.material = { friction: 0.75, restitution: 0.75 };
+  ballPhysicsShape.material = { friction: 0.05, restitution: 0.2 };
 
   let ballsCount = 0;
 

@@ -8,8 +8,6 @@ import {
   ShadowGenerator,
   Sound,
   Vector3,
-  PhysicsRaycastResult,
-  Ray,
   WebXRDefaultExperience,
   WebGPUEngine,
 } from "@babylonjs/core";
@@ -20,13 +18,15 @@ import "@babylonjs/loaders/glTF"; // TODO: 667kB, tree-shake it?
 import HavokPhysics from "@babylonjs/havok";
 
 import { addDevtimeFeatures } from "./helpers/add-devtime-features";
+import { createBalls } from "./helpers/create-balls";
+import { drawTargetDot } from "./helpers/draw-target-dot";
 import { createCamera } from "./helpers/create-camera";
 import { createGround } from "./helpers/create-ground";
 import { createLights } from "./helpers/create-lights";
 import { createPoolTable } from "./helpers/create-pool-table";
+import { applyForceOnInteraction } from "./helpers/apply-force-on-interaction";
 
 import myHeartIsHome from "../../../../assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3";
-import { createBalls } from "./helpers/create-ball";
 
 DracoCompression.Configuration = {
   decoder: {
@@ -55,11 +55,6 @@ export const initializeExperience = async () => {
 
   const camera = createCamera(scene, canvas);
 
-  // TODO: add fullscreen button
-  canvas.addEventListener("click", () => {
-    canvas.requestPointerLock?.();
-  });
-
   const lights = createLights(scene);
 
   const [{ table }, { ground }] = await Promise.all([
@@ -77,6 +72,8 @@ export const initializeExperience = async () => {
     shadowGenerator.addShadowCaster(ball, true);
   });
 
+  const removeDot = drawTargetDot();
+
   const xrExperience = await WebXRDefaultExperience.CreateAsync(scene, {
     floorMeshes: [ground],
     optionalFeatures: true,
@@ -85,6 +82,8 @@ export const initializeExperience = async () => {
 
   // WebXR events
   xrExperience.input.onControllerAddedObservable.add((controller) => {
+    removeDot();
+
     let currentAxes = { x: 0, y: 0 };
     let targetMovementVector = new Vector3(0, 0, 0);
     const lerpFactor = 0.1;
@@ -141,38 +140,18 @@ export const initializeExperience = async () => {
       // Add an event listener for the trigger button
       triggerComponent.onButtonStateChangedObservable.add((component) => {
         if (component.pressed) {
-          // Create a Ray object to store the direction
-          const directionRay = new Ray(Vector3.Zero(), Vector3.Zero());
-
-          // Use the 'getWorldPointerRayToRef' method to update the Ray object with the current direction
-          controller.getWorldPointerRayToRef(directionRay);
-
-          // The 'direction' property of the Ray object contains the controller's direction
-          const controllerDirection = directionRay.direction;
-
-          // Cast a ray from the controller's position in the forward direction
-          const startPosition = directionRay.origin;
-          const endPosition = startPosition.add(controllerDirection.scale(100));
-          const raycastResult = new PhysicsRaycastResult();
-
-          // Perform the raycast
-          scene
-            .getPhysicsEngine()!
-            // @ts-ignore
-            .raycastToRef(startPosition, endPosition, raycastResult);
-
-          // Apply a force to the hit body if there's a hit
-          if (raycastResult.hasHit) {
-            const forceMagnitude = 1;
-            const force = controllerDirection.scale(forceMagnitude);
-            // @ts-ignore
-            raycastResult.body.mass = 1; // Ensure the hit body has mass before applying impulse
-            // @ts-ignore
-            raycastResult.body.applyImpulse(force, raycastResult.hitPointWorld);
-          }
+          applyForceOnInteraction(scene, controller);
         }
       });
     });
+  });
+
+  xrExperience.input.onControllerRemovedObservable.add(() => {
+    drawTargetDot();
+  });
+
+  canvas.addEventListener("click", () => {
+    applyForceOnInteraction(scene);
   });
 
   if (process.env.NODE_ENV === "development") {
@@ -183,6 +162,10 @@ export const initializeExperience = async () => {
     scene.render();
   });
 
+  // TODO: add fullscreen button
+  canvas.addEventListener("click", () => {
+    canvas.requestPointerLock?.();
+  });
   window.addEventListener("resize", () => engine.resize());
 
   // add background music
