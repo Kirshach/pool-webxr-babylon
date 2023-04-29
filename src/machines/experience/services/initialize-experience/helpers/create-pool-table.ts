@@ -13,7 +13,7 @@ import {
 import {
   supportsAvif,
   supportsWebP,
-} from "../shared/lib/is-image-format-supported";
+} from "../../../../../shared/lib/is-image-format-supported";
 
 const getTableFolder = () => {
   if (supportsAvif) {

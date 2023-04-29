@@ -16,17 +16,17 @@ import {
 
 import "@babylonjs/loaders/glTF"; // TODO: 667kB, tree-shake it?
 
-// @ts-ignore
+// @ts-expect-error
 import HavokPhysics from "@babylonjs/havok";
 
-import { addDevtimeFeatures } from "../../../../features/add-devtime-features";
-import { createCamera } from "../../../../entities/camera";
-import { createSpotLight } from "../../../../entities/spot-light";
-import { createPoolTable } from "../../../../entities/pool-table";
-import { createGround } from "../../../../entities/ground";
+import { addDevtimeFeatures } from "./helpers/add-devtime-features";
+import { createCamera } from "./helpers/create-camera";
+import { createGround } from "./helpers/create-ground";
+import { createLights } from "./helpers/create-lights";
+import { createPoolTable } from "./helpers/create-pool-table";
 
 import myHeartIsHome from "../../../../assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3";
-import { createBall } from "../../../../entities/ball";
+import { createBalls } from "./helpers/create-ball";
 
 DracoCompression.Configuration = {
   decoder: {
@@ -37,66 +37,46 @@ DracoCompression.Configuration = {
 };
 
 export const initializeExperience = async () => {
-  const canvas = document.getElementById("canvas");
-
-  if (!canvas) {
-    throw new Error("Canvas not found");
-  } else if (!(canvas instanceof HTMLCanvasElement)) {
-    throw new Error(
-      '"#canvas" element is not an instance of HTMLCanvasElement'
-    );
-  }
+  const canvas = document.getElementById("canvas") as HTMLCanvasElement;
   const engine = navigator.gpu
     ? new WebGPUEngine(canvas, {
         antialias: true,
       })
     : new Engine(canvas, true);
-
-  if (navigator.gpu) {
-    await (engine as WebGPUEngine).initAsync();
-  }
-
   engine.displayLoadingUI();
+  navigator.gpu && (await (engine as WebGPUEngine).initAsync());
+  const havokPlugin = new HavokPlugin(true, await HavokPhysics());
 
   const scene = new Scene(engine);
   scene.collisionsEnabled = true;
   scene.gravity = new Vector3(0, -0.15, 0);
-
-  const havokInstance = await HavokPhysics();
-  const havokPlugin = new HavokPlugin(true, havokInstance);
-
   scene.clearColor = new Color4(0, 0, 0, 1);
   scene.enablePhysics(new Vector3(0, -9.81, 0), havokPlugin);
 
-  createCamera(scene, canvas);
+  const camera = createCamera(scene, canvas);
 
+  // TODO: add fullscreen button
   canvas.addEventListener("click", () => {
     canvas.requestPointerLock?.();
   });
 
-  const { spotLight } = createSpotLight(scene);
-  addDevtimeFeatures(scene, [spotLight]);
+  const lights = createLights(scene);
 
   const [{ table }, { ground }] = await Promise.all([
     createPoolTable(scene),
     createGround(scene),
   ]);
 
-  const balls = Array.from({ length: 20 }).map(() => createBall(scene));
-
-  // shadows
-  const shadowGenerator = new ShadowGenerator(2048, spotLight, true);
-  shadowGenerator.addShadowCaster(
-    table,
-    true /* check if this parameter changes anything */
-  );
+  const shadowGenerator = new ShadowGenerator(2048, lights.spotLight, true);
+  shadowGenerator.addShadowCaster(table);
   shadowGenerator.bias = 0.001;
+  shadowGenerator.usePoissonSampling = true;
+
+  const balls = createBalls(scene);
   balls.forEach((ball) => {
     shadowGenerator.addShadowCaster(ball, true);
   });
-  shadowGenerator.usePoissonSampling = true;
 
-  // WebXR
   const xrExperience = await WebXRDefaultExperience.CreateAsync(scene, {
     floorMeshes: [ground],
     optionalFeatures: true,
@@ -105,7 +85,6 @@ export const initializeExperience = async () => {
 
   // WebXR events
   xrExperience.input.onControllerAddedObservable.add((controller) => {
-    const yAxis = Axis.Y;
     let currentAxes = { x: 0, y: 0 };
     let targetMovementVector = new Vector3(0, 0, 0);
     const lerpFactor = 0.1;
@@ -135,7 +114,7 @@ export const initializeExperience = async () => {
         cameraDirection.y = 0;
 
         // Rotate the camera direction vector by 90 degrees around the up vector to get the right vector
-        var rightVector = Vector3.Cross(yAxis, cameraDirection).normalize();
+        var rightVector = Vector3.Cross(Axis.Y, cameraDirection).normalize();
 
         // Combine the camera direction and right vectors to get the movement vector
         var rawMovementVector = cameraDirection
@@ -196,7 +175,10 @@ export const initializeExperience = async () => {
     });
   });
 
-  // run the loop
+  if (process.env.NODE_ENV === "development") {
+    addDevtimeFeatures(scene, [lights.spotLight]);
+  }
+
   engine.runRenderLoop(() => {
     scene.render();
   });
@@ -211,5 +193,5 @@ export const initializeExperience = async () => {
 
   engine.hideLoadingUI();
 
-  return { scene, engine, canvas };
+  return { scene, engine, camera, canvas, lights };
 };

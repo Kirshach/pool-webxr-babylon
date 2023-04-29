@@ -14,6 +14,7 @@
       Play Pool in Virtual Reality! (or PC. or mobile)
     </h1>
     <canvas id="canvas"></canvas>
+
     <dialog
       id="retry-loading-screen-dialog"
       aria-labelledby="retry-loading-screen-dialog__heading"
@@ -28,6 +29,21 @@
         </p>
         <p id="retry-loading-error-dialog__message-stack"></p>
         <button id="retry-loading-error-dialog__retry-button">Try again</button>
+      </form>
+    </dialog>
+
+    <dialog
+      id="choose-game-mode-dialog"
+      aria-labelledby="choose-game-mode-dialog__heading"
+    >
+      <form method="dialog">
+        <h2 id="choose-game-mode-dialog__heading">
+          Something really bad has happened
+        </h2>
+        <p id="choose-game-mode-dialog__description">
+          If the problem persists, and you want us to improve the app's user
+          experience, feel free to report this error to us:
+        </p>
       </form>
     </dialog>
   </body>
