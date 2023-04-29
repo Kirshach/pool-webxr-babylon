@@ -41,8 +41,17 @@ export const applyForceOnInteraction = (
     .raycastToRef(startPosition, endPosition, raycastResult);
 
   if (raycastResult.hasHit) {
-    const forceMagnitude = 20;
-    const force = controllerDirection.scale(forceMagnitude);
-    raycastResult.body?.applyImpulse(force, raycastResult.hitPointWorld);
+    // Calculate the contact point on the surface of the ball
+    const contactPoint = raycastResult.hitPointWorld;
+    const ballCenter = raycastResult.body?.getObjectCenterWorld();
+
+    if (ballCenter) {
+      // Calculate force direction based on the contact point
+      const forceDirection = ballCenter.subtract(contactPoint).normalize();
+      // Apply force
+      const forceMagnitude = 30;
+      const force = forceDirection.scale(forceMagnitude);
+      raycastResult.body?.applyImpulse(force, contactPoint);
+    }
   }
 };

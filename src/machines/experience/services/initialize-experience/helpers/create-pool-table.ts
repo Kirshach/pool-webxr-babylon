@@ -65,14 +65,20 @@ export const createPoolTable = (scene: Scene) =>
     const tableAggregate = new PhysicsAggregate(
       table,
       PhysicsShapeType.MESH,
-      { mass: 0, friction: 1, mesh: table as Mesh },
+      { mass: 0, friction: 100, mesh: table as Mesh },
       scene
     );
 
     // Check camera collisions
     const boxMesh = MeshBuilder.CreateTiledBox(
       "boxMesh",
-      { height: 1.7, width: 2.8, depth: 1.5, tileSize: 100 },
+      { height: 1.6, width: 2.41, depth: 1.13, tileSize: 100 },
+      scene
+    );
+    new PhysicsAggregate(
+      boxMesh,
+      PhysicsShapeType.BOX,
+      { mass: 0, friction: 100 },
       scene
     );
     boxMesh.position.set(0, 0, 0.03);
