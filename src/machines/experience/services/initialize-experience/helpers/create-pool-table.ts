@@ -1,5 +1,4 @@
 import {
-  Mesh,
   MeshBuilder,
   SceneLoader,
   PhysicsAggregate,
@@ -8,7 +7,11 @@ import {
   Scene,
   Vector3,
   TransformNode,
+  StandardMaterial,
+  PBRMaterial,
 } from "@babylonjs/core";
+
+const zDelta = 0.00898;
 
 import {
   supportsAvif,
@@ -56,38 +59,119 @@ export const createPoolTable = (scene: Scene) =>
 
     // Rotate the table mesh
     table.rotate(new Vector3(1, 0, 0), Math.PI / 2);
-    table.position.set(localCenter.x, 0, 0);
+    table.position.set(localCenter.x, 0, -0.0275);
 
     // Center the table in the scene by adjusting the parent node's position
     tableParent.position.set(0, localCenter.y, 0);
 
     // Add physics
-    const tableAggregate = new PhysicsAggregate(
-      table,
-      PhysicsShapeType.MESH,
-      { mass: 0, friction: 100, mesh: table as Mesh },
+    createBlock(
+      {
+        depth: 1.1,
+        width: 2.56,
+        height: 0.1,
+        position: { x: 0, y: 0.746138, z: zDelta },
+      },
       scene
     );
 
-    // Check camera collisions
-    const boxMesh = MeshBuilder.CreateTiledBox(
-      "boxMesh",
-      { height: 1.6, width: 2.41, depth: 1.13, tileSize: 100 },
-      scene
+    createBlock(
+      {
+        depth: 0.11,
+        width: 2.38,
+        height: 0.1,
+        position: { x: 0, y: 0.746138, z: 0.56 },
+      },
+      scene,
+      "z"
     );
-    new PhysicsAggregate(
-      boxMesh,
-      PhysicsShapeType.BOX,
-      { mass: 0, friction: 100 },
-      scene
+
+    createBlock(
+      {
+        depth: 0.15,
+        width: 1.086,
+        height: 0.1,
+        position: { x: 0.6435, y: 0.78719, z: 0.70076 },
+      },
+      scene,
+      "z"
     );
-    boxMesh.position.set(0, 0, 0.03);
-    boxMesh.checkCollisions = true;
-    boxMesh.isVisible = false;
-    boxMesh.collisionMask = 2;
+
+    createBlock(
+      {
+        depth: 0.15,
+        width: 1.086,
+        height: 0.1,
+        position: { x: -0.6435, y: 0.78719, z: 0.70076 },
+      },
+      scene,
+      "z"
+    );
 
     return {
       table,
-      tableAggregate,
     };
   });
+
+const createBlock = (
+  {
+    depth,
+    width,
+    height,
+    position,
+  }: {
+    depth: number;
+    width: number;
+    height: number;
+    position: { x: number; y: number; z: number };
+  },
+  scene: Scene,
+  symmetric: "x" | "y" | "z" | undefined = undefined
+) => {
+  const blockMesh = MeshBuilder.CreateTiledBox(
+    "boxMesh",
+    {
+      depth,
+      width,
+      height,
+    },
+    scene
+  );
+  blockMesh.position.set(position.x, position.y, position.z);
+
+  new PhysicsAggregate(
+    blockMesh,
+    PhysicsShapeType.BOX,
+    { mass: 0, friction: 100 },
+    scene
+  );
+  blockMesh.checkCollisions = true;
+
+  if (symmetric) {
+    if (symmetric === "z") {
+      createBlock(
+        {
+          depth,
+          width,
+          height,
+          position: { ...position, z: -position.z + zDelta * 2 },
+        },
+        scene
+      );
+    } else {
+      createBlock(
+        {
+          depth,
+          width,
+          height,
+          position: Object.assign(position, {
+            [symmetric]: -position[symmetric],
+          }),
+        },
+        scene
+      );
+    }
+  }
+  // blockMesh.isVisible = false;
+  blockMesh.collisionMask = 1;
+};

@@ -7,18 +7,23 @@ import {
   type Scene,
 } from "@babylonjs/core";
 
-const createBall = (scene: Scene, count: number, shape: PhysicsShapeSphere) => {
+const createBall = (
+  scene: Scene,
+  count: number,
+  shape: PhysicsShapeSphere,
+  diameter
+) => {
   const ball = MeshBuilder.CreateSphere(`ball_${count}`, {
-    diameter: 0.061,
+    diameter,
     segments: 32,
   });
 
-  ball.position.set(Math.random() * 1.5 - 0.5, 0.837, Math.random() - 0.5);
+  ball.position.set(Math.random() * 1.5 - 0.5, 0.8275, Math.random() - 0.5);
 
   const ballBody = new PhysicsBody(
     ball,
     PhysicsMotionType.DYNAMIC,
-    true,
+    false,
     scene
   );
   ballBody.shape = shape;
@@ -28,12 +33,17 @@ const createBall = (scene: Scene, count: number, shape: PhysicsShapeSphere) => {
 };
 
 export const createBalls = (scene: Scene) => {
-  const ballPhysicsShape = new PhysicsShapeSphere(Vector3.Zero(), 0.035, scene);
+  const radius = 0.0305;
+  const ballPhysicsShape = new PhysicsShapeSphere(
+    Vector3.Zero(),
+    radius,
+    scene
+  );
   ballPhysicsShape.material = { friction: 0.05, restitution: 0.2 };
 
   let ballsCount = 0;
 
   return Array.from({ length: 20 }).map(() =>
-    createBall(scene, ++ballsCount, ballPhysicsShape)
+    createBall(scene, ++ballsCount, ballPhysicsShape, radius * 2)
   );
 };

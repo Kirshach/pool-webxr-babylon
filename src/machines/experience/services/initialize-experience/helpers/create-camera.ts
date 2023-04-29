@@ -2,7 +2,8 @@ import { UniversalCamera, Vector3, type Scene } from "@babylonjs/core";
 
 export const createCamera = (scene: Scene, canvas: HTMLCanvasElement) => {
   const cameraHeight = 1.8;
-  const randomSign = Math.random() > 0.5 ? 1 : -1;
+  // const randomSign = Math.random() > 0.5 ? 1 : -1;
+  const randomSign = 1;
   const camera = new UniversalCamera(
     "camera",
     new Vector3(randomSign * 3, cameraHeight, randomSign * 3),

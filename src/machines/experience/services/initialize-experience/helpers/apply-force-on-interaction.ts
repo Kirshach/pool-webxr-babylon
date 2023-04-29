@@ -19,11 +19,11 @@ export const applyForceOnInteraction = (
       scene.getEngine().getRenderHeight() / 2
     );
     if (!pickInfo.ray) {
-      return console.log("no ray");
+      return console.log("no ray present");
     }
     if (pickInfo) {
-      directionRay.origin = pickInfo.ray!.origin;
-      directionRay.direction = pickInfo.ray!.direction;
+      directionRay.origin = pickInfo.ray.origin;
+      directionRay.direction = pickInfo.ray.direction;
     }
   } else {
     // Use the controller's direction for the ray
@@ -37,7 +37,7 @@ export const applyForceOnInteraction = (
 
   scene
     .getPhysicsEngine()!
-    // @ts-ignore
+    // @ts-expect-error
     .raycastToRef(startPosition, endPosition, raycastResult);
 
   if (raycastResult.hasHit) {
