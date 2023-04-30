@@ -28,7 +28,7 @@ export const experienceMachine = createMachine<
               },
             },
             {
-              target: "menu",
+              target: "in_menu",
             },
           ],
           onError: {
@@ -36,24 +36,23 @@ export const experienceMachine = createMachine<
           },
         },
       },
-      menu: {
+      reloading: {
+        entry: "refresh_page",
+      },
+      in_menu: {
         entry: "show_lobby_screen",
       },
       loading_match: {
         data: {
           matchQuery: 1,
         },
+        entry: "show_awaiting_connection_screen",
       },
       loading_failed: {
         entry: "show_retry_loading_screen",
         on: {
           RETRY_LOADING: {
-            actions: "reload_page",
-            // TODO: I kinda don't like this, but it's the only way I can think of
-            // to reload the page while not having the event self-targeting in the block scheme
-            // It's not a big deal, but it's a bit weird to have it call `initializeExperience` again before refreshing the page
-            // TODO: add a new state "reloading" that will be the target of this event
-            target: "loading",
+            target: "reloading",
           },
         },
       },
@@ -68,7 +67,7 @@ export const experienceMachine = createMachine<
   {
     actions: {
       show_retry_loading_screen: showRetryLoadingScreen,
-      reload_page: () => {
+      refresh_page: () => {
         window.location.reload();
       },
     },
