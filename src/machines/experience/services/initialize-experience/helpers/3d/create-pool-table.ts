@@ -7,8 +7,6 @@ import {
   Scene,
   Vector3,
   TransformNode,
-  StandardMaterial,
-  PBRMaterial,
 } from "@babylonjs/core";
 
 const zDelta = 0.00898;
@@ -16,7 +14,7 @@ const zDelta = 0.00898;
 import {
   supportsAvif,
   supportsWebP,
-} from "../../../../../shared/lib/is-image-format-supported";
+} from "../../../../../../shared/lib/is-image-format-supported";
 
 const getTableFolder = () => {
   if (supportsAvif) {
