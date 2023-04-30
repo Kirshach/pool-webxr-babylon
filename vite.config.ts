@@ -7,7 +7,7 @@ export default defineConfig({
   build: {
     target: "esnext",
   },
-  server: { https: true },
+  server: { https: true, host: true },
   plugins: [
     mkcert(),
     gltf({
