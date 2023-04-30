@@ -74,81 +74,82 @@ export const initializeExperience = async () => {
 
   const removeDot = drawTargetDot();
 
-  const xrExperience = await WebXRDefaultExperience.CreateAsync(scene, {
-    floorMeshes: [ground],
-    optionalFeatures: true,
-    disableTeleportation: true,
-  });
+  if (navigator.xr) {
+    const xrExperience = await WebXRDefaultExperience.CreateAsync(scene, {
+      floorMeshes: [ground],
+      optionalFeatures: true,
+      disableTeleportation: true,
+    });
+    // WebXR events
+    xrExperience.input.onControllerAddedObservable.add((controller) => {
+      removeDot();
 
-  // WebXR events
-  xrExperience.input.onControllerAddedObservable.add((controller) => {
-    removeDot();
+      let currentAxes = { x: 0, y: 0 };
+      let targetMovementVector = new Vector3(0, 0, 0);
+      const lerpFactor = 0.1;
 
-    let currentAxes = { x: 0, y: 0 };
-    let targetMovementVector = new Vector3(0, 0, 0);
-    const lerpFactor = 0.1;
-
-    controller.onMotionControllerInitObservable.add((motionController) => {
-      // Enable smooth movement with the VR controllers
-      const thumbstick = motionController.getComponent(
-        "xr-standard-thumbstick"
-      );
-
-      thumbstick.onAxisValueChangedObservable.add((axes) => {
-        currentAxes = axes;
-      });
-
-      let lastUpdateTime = performance.now();
-
-      scene.registerBeforeRender(() => {
-        const currentTime = performance.now();
-        const deltaTime = (currentTime - lastUpdateTime) / 1000; // Calculate delta time in seconds
-        lastUpdateTime = currentTime;
-
-        // Get the XR camera from the scene
-        var xrCamera = xrExperience.baseExperience.camera;
-
-        // Get the direction vector of the camera
-        var cameraDirection = xrCamera.getDirection(new Vector3(0, 0, 1));
-        cameraDirection.y = 0;
-
-        // Rotate the camera direction vector by 90 degrees around the up vector to get the right vector
-        var rightVector = Vector3.Cross(Axis.Y, cameraDirection).normalize();
-
-        // Combine the camera direction and right vectors to get the movement vector
-        var rawMovementVector = cameraDirection
-          .scale(-currentAxes.y)
-          .add(rightVector.scale(currentAxes.x))
-          .normalize();
-
-        // LERP between the current target movement vector and the raw movement vector
-        targetMovementVector = Vector3.Lerp(
-          targetMovementVector,
-          rawMovementVector,
-          lerpFactor
+      controller.onMotionControllerInitObservable.add((motionController) => {
+        // Enable smooth movement with the VR controllers
+        const thumbstick = motionController.getComponent(
+          "xr-standard-thumbstick"
         );
 
-        // Scale the movement vector by the desired speed, delta time factor and add it to the camera position
-        xrCamera.position.addInPlace(targetMovementVector.scale(deltaTime));
-      });
+        thumbstick.onAxisValueChangedObservable.add((axes) => {
+          currentAxes = axes;
+        });
 
-      // push the ball
-      const triggerComponent = motionController.getComponent(
-        "xr-standard-trigger"
-      );
+        let lastUpdateTime = performance.now();
 
-      // Add an event listener for the trigger button
-      triggerComponent.onButtonStateChangedObservable.add((component) => {
-        if (component.pressed) {
-          applyForceOnInteraction(scene, controller);
-        }
+        scene.registerBeforeRender(() => {
+          const currentTime = performance.now();
+          const deltaTime = (currentTime - lastUpdateTime) / 1000; // Calculate delta time in seconds
+          lastUpdateTime = currentTime;
+
+          // Get the XR camera from the scene
+          var xrCamera = xrExperience.baseExperience.camera;
+
+          // Get the direction vector of the camera
+          var cameraDirection = xrCamera.getDirection(new Vector3(0, 0, 1));
+          cameraDirection.y = 0;
+
+          // Rotate the camera direction vector by 90 degrees around the up vector to get the right vector
+          var rightVector = Vector3.Cross(Axis.Y, cameraDirection).normalize();
+
+          // Combine the camera direction and right vectors to get the movement vector
+          var rawMovementVector = cameraDirection
+            .scale(-currentAxes.y)
+            .add(rightVector.scale(currentAxes.x))
+            .normalize();
+
+          // LERP between the current target movement vector and the raw movement vector
+          targetMovementVector = Vector3.Lerp(
+            targetMovementVector,
+            rawMovementVector,
+            lerpFactor
+          );
+
+          // Scale the movement vector by the desired speed, delta time factor and add it to the camera position
+          xrCamera.position.addInPlace(targetMovementVector.scale(deltaTime));
+        });
+
+        // push the ball
+        const triggerComponent = motionController.getComponent(
+          "xr-standard-trigger"
+        );
+
+        // Add an event listener for the trigger button
+        triggerComponent.onButtonStateChangedObservable.add((component) => {
+          if (component.pressed) {
+            applyForceOnInteraction(scene, controller);
+          }
+        });
       });
     });
-  });
 
-  xrExperience.input.onControllerRemovedObservable.add(() => {
-    drawTargetDot();
-  });
+    xrExperience.input.onControllerRemovedObservable.add(() => {
+      drawTargetDot();
+    });
+  }
 
   canvas.addEventListener("click", () => {
     applyForceOnInteraction(scene);
