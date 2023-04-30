@@ -21,6 +21,8 @@
     "@babylonjs/havok": "^1.0.0",
     "@babylonjs/inspector": "^6.0.0",
     "@babylonjs/loaders": "^6.0.0",
+    "nanoid": "^4.0.2",
+    "peerjs": "^1.4.7",
     "vite-plugin-mkcert": "^1.13.0",
     "xstate": "^4.37.1"
   }

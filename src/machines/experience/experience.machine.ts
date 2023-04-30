@@ -1,4 +1,6 @@
+import { Peer } from "peerjs";
 import { createMachine, interpret } from "xstate";
+import { nanoid } from "nanoid";
 
 import { showRetryLoadingScreen } from "./actions/show-retry-loading-screen";
 import { initializeExperience } from "./services/initialize-experience";
@@ -10,7 +12,7 @@ export const experienceMachine = createMachine<
   ExperienceEvent
 >(
   {
-    /** @xstate-layout N4IgpgJg5mDOIC5RgB4AcwCcCWYB2AxmAHQA2A9gIYTZ5QDEE5eJtAbuQNYmoY75EyVGnQTtyBSgBdszANoAGALqKliUGnKxsM5upApEARgCcAFmIBWAGxmzR6wGZHdgEyPTAGhABPRAFpXI2IFBUcbd1trE3CYgF84714sXEISCmpaBiYWYnFuYmT+NKFM0XFJXTxVOSM1JBBNbSr9QwRTAHYrSyMjAA5rIw67DoVrDu8-BEdXYj6hyzH7BUsY0MsEpPQUgXThLPosTHJMYjRSaQAzE4BbQu3iwQyRKDE8DkrZauVVfSadL6tRCWCxmea9RzWEGdHqWSYBIwzYjRKG9MwzVyuPodTbgB6pJ77OgAfUulGwpEg9AASgBRAAq1IAmsSADIAeQAggARACSADkAOK-Br-FoNNr+RGzVw9PoKPqQpauJzwhCBezEIxjDoqkwKXXWVwdRwJRIgPDkCBwfRFAlgP5aAF6CUI+XEWX9BVK2wqxxq-xmSx9YgdRZGrELExOXF23alF6O5qA13q3qzUxmcbyxbG6P+3wBcbIhSI0J9MEmE0mWP4+M3fAAVyTzrwQIQlksXTMHSMrgU7jsQyDas1JoUMUcYX7GLMtb49oTWWJN2kBAAFi3xaA2osLIrBj2TCY+senHDC2menMYtY+sGDZYZjZ5zsSs9l2SKZAtymdwiVlDIwnz6TEhkxKETADRxew9cMhl6eZrDCU0zSAA */
+    /** @xstate-layout N4IgpgJg5mDOIC5RgB4AcwCcCWYB2AxmAHQA2A9gIYTZ5QDEE5eJtAbuQNYmoY75EyVGnQTtyBSgBdszANoAGALqKliUGnKxsM5upApEARgBsC4gGYTAJgAsADgCcRgKwn7Ciy5cAaEAE9EAFpba2IzIwsFBRcFIwVHR1tHFwBfVL9eLFxCEgpqWgYmFmJxbmIs-lyhAtFxSV08VTkjNSQQTW1G-UMEI3swhRMU6yjrUdt3P0C+22J4t1sjJJMXRxNQi3TM9GyBPOFC+ixMckxiNFJpADMzgFsK3arBfJEoMTwOBtkm5VV9To6H49YKRCzEaz2MYuJZJewmVbTUGxSyOKwmCwAdismKMk224CeORehzoAH1rpRsKRIPQAEoAUQAKnSAJpkgAyAHkAIIAEQAkgA5ADi-3agO67V6QSMkUsWMx1hiFmsmMxtgSSIQQSsYQxLlchr1KRcmPSGRAeHIEDg+kqxLAAK0QL00tB9iM4WVk0SUXVmIx2qCLih81smIG4wU41sDgJDv2NTezq6wPdOrlYWWk0jMRjmPWFmDJkx4TiUQU9gcjmxjgTRKTmDAr0KqddeBBmesJmItgsjjVRlxDiHweSLnCEahCkj2LWFlsDb4jtKeDJd3wAFd21LQL1xmXvBYnOrJrET9ZtR4FdZQ3YwV4e8u9tVW+S7tICAALXfp-eIKGczDk4GLRLEw6YsGSrEOsZoRrixqQiYL7PActRQBSVI0hAf5ugBmYWOCNgKL6aKzuqQYBMEar2BCtaRgMuKjKRFqpEAA */
     id: "experience",
     initial: "loading",
     predictableActionArguments: true,
@@ -43,10 +45,8 @@ export const experienceMachine = createMachine<
         entry: "show_lobby_screen",
       },
       loading_match: {
-        data: {
-          matchQuery: 1,
-        },
-        entry: "show_awaiting_connection_screen",
+        data: {},
+        entry: "test_peer_connection",
       },
       loading_failed: {
         entry: "show_retry_loading_screen",
@@ -66,6 +66,47 @@ export const experienceMachine = createMachine<
 
   {
     actions: {
+      test_peer_connection: () => {
+        const url = new URL(window.location.href);
+        const peerId = url.searchParams
+          .get("peer")
+          ?.match(/^[a-zA-Z0-9-_]*$/)?.[0];
+
+        const userId =
+          url.searchParams.get("user")?.match(/^[a-zA-Z0-9-_]*$/)?.[0] ??
+          nanoid();
+
+        if (!peerId) {
+          throw new Error("Unknown peer id format");
+        }
+
+        const peer = new Peer(userId);
+
+        peer.on("open", (id) => {
+          console.log("My peer ID is: " + id);
+          const conn = peer.connect(peerId);
+
+          conn.on("open", () => {
+            console.log("Connection established with: " + conn.peer);
+          });
+
+          conn.on("error", (err) => {
+            console.error("Connection error:", err);
+          });
+        });
+
+        peer.on("connection", (conn) => {
+          console.log("Someone connected!: ", conn);
+
+          conn.on("open", () => {
+            console.log("Connection opened with: " + conn.peer);
+          });
+
+          conn.on("error", (err) => {
+            console.error("Received connection error:", err);
+          });
+        });
+      },
       show_retry_loading_screen: showRetryLoadingScreen,
       refresh_page: () => {
         window.location.reload();
@@ -73,7 +114,7 @@ export const experienceMachine = createMachine<
     },
     guards: {
       has_match_query: () => {
-        return window.location.search.includes("match");
+        return window.location.search.includes("peer");
       },
     },
     services: {
