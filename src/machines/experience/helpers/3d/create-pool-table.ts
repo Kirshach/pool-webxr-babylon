@@ -9,12 +9,10 @@ import {
   TransformNode,
 } from "@babylonjs/core";
 
-const zDelta = 0.00898;
-
 import {
   supportsAvif,
   supportsWebP,
-} from "../../../../../../shared/lib/is-image-format-supported";
+} from "../../../../shared/lib/is-image-format-supported";
 
 const getTableFolder = () => {
   if (supportsAvif) {
@@ -55,24 +53,25 @@ export const createPoolTable = (scene: Scene) =>
     const boundingBox = table.getBoundingInfo().boundingBox;
     const localCenter = boundingBox.center.clone();
 
-    // Rotate the table mesh
     table.rotate(new Vector3(1, 0, 0), Math.PI / 2);
     table.position.set(localCenter.x, 0, -0.0275);
 
     // Center the table in the scene by adjusting the parent node's position
-    tableParent.position.set(0, localCenter.y, 0);
+    tableParent.position.set(0, localCenter.y, -0.00449 * 2);
 
     // Add physics
+    // main block
     createBlock(
       {
         depth: 1.1,
         width: 2.56,
         height: 0.1,
-        position: { x: 0, y: 0.746138, z: zDelta },
+        position: { x: 0, y: 0.746138, z: 0 },
       },
       scene
     );
 
+    // main block side additions
     createBlock(
       {
         depth: 0.11,
@@ -84,26 +83,40 @@ export const createPoolTable = (scene: Scene) =>
       "z"
     );
 
+    // nearer longer side blocks
     createBlock(
       {
         depth: 0.15,
         width: 1.086,
         height: 0.1,
-        position: { x: 0.6435, y: 0.78719, z: 0.70076 },
+        position: { x: 0.6435, y: 0.78719, z: 0.69178 },
       },
       scene,
       "z"
     );
 
+    // further longer side blocks
     createBlock(
       {
         depth: 0.15,
         width: 1.086,
         height: 0.1,
-        position: { x: -0.6435, y: 0.78719, z: 0.70076 },
+        position: { x: -0.6435, y: 0.78719, z: 0.69178 },
       },
       scene,
       "z"
+    );
+
+    // shorter side blocks
+    createBlock(
+      {
+        depth: 1.04,
+        width: 0.15,
+        height: 0.1,
+        position: { x: 1.35611, y: 0.78719, z: 0 },
+      },
+      scene,
+      "x"
     );
 
     return {
@@ -152,7 +165,7 @@ const createBlock = (
           depth,
           width,
           height,
-          position: { ...position, z: -position.z + zDelta * 2 },
+          position: { ...position, z: -position.z },
         },
         scene
       );
