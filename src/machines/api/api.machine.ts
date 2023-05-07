@@ -14,7 +14,7 @@ export const apiMachine = createMachine<APIContext, APIEvent>(
     },
 
     schema: {
-      events: {} as ExperienceEvent,
+      events: {} as APIEvent,
       services: {} as {},
     },
   },
@@ -29,4 +29,4 @@ export const apiMachine = createMachine<APIContext, APIEvent>(
   }
 );
 
-export const experienceService = interpret(experienceMachine);
+export const apiService = interpret(apiMachine);

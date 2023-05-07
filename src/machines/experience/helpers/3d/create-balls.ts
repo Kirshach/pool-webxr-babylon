@@ -11,7 +11,7 @@ const createBall = (
   scene: Scene,
   count: number,
   shape: PhysicsShapeSphere,
-  diameter
+  diameter: number
 ) => {
   const ball = MeshBuilder.CreateSphere(`ball_${count}`, {
     diameter,

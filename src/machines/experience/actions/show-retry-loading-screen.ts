@@ -1,4 +1,5 @@
 import { ErrorExecutionEvent } from "xstate";
+
 import { experienceService } from "../experience.machine";
 import { ExperienceContext } from "../types";
 
@@ -7,7 +8,7 @@ export const showRetryLoadingScreen = (
   event: ErrorExecutionEvent
 ) => {
   const dialog = document.getElementById(
-    "retry-loading-screen-dialog"
+    "retry-loading-dialog"
   ) as HTMLDialogElement;
 
   const errorStackTrace = document.getElementById(
