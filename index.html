@@ -15,6 +15,8 @@
     </h1>
     <canvas id="canvas"></canvas>
 
+    <button id="return-to-main-menu-button">Return to main menu</button>
+
     <dialog
       id="retry-loading-dialog"
       aria-labelledby="retry-loading-dialog__heading"
@@ -33,17 +35,18 @@
     </dialog>
 
     <dialog
-      id="choose-game-mode-dialog"
-      aria-labelledby="choose-game-mode-dialog__heading"
+      id="main-menu-dialog"
+      aria-labelledby="main-menu-dialog__description"
     >
       <form method="dialog">
-        <h2 id="choose-game-mode-dialog__heading">
-          Something really bad has happened
-        </h2>
-        <p id="choose-game-mode-dialog__description">
-          If the problem persists, and you want us to improve the app's user
-          experience, feel free to report this error to us:
-        </p>
+        <h2 id="main-menu-dialog__heading">Welcome to Pool-WebXR!</h2>
+        <p id="main-menu-dialog__description">Choose game mode:</p>
+        <div id="main-menu-dialog__game-modes">
+          <button id="main-menu-dialog__game-mode--practice">Practice</button>
+          <button disabled id="main-menu-dialog__game-mode--unranked">
+            Unranked
+          </button>
+        </div>
       </form>
     </dialog>
   </body>

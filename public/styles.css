@@ -96,29 +96,31 @@ dialog {
   & p {
     margin: 1.8em 0;
   }
+}
 
+#retry-loading-dialog {
   #retry-loading-error-dialog__message-stack {
     overflow-wrap: break-word;
   }
+}
 
-  & button {
-    display: block;
-    background: transparent;
-    padding: 0.35em 0.75em;
-    margin: 0 auto 0.25rem;
-    color: inherit;
-    border: 1px solid currentColor;
-    font-weight: 500;
-    border-radius: 5px;
-    font-size: 1.25rem;
-    cursor: pointer;
+#main-menu-dialog {
+  & #main-menu-dialog__description {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 1.5em;
+  }
 
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
+  & #main-menu-dialog__game-modes {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 0.5em;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
 
-    &:active {
-      background-color: rgba(255, 255, 255, 0.2);
+    & button {
+      margin: 0.5rem 0;
     }
   }
 }

@@ -2,7 +2,10 @@ import { Peer } from "peerjs";
 import { createMachine, interpret } from "xstate";
 import { nanoid } from "nanoid";
 
+import { showMainMenu } from "./actions/show-main-menu";
 import { showRetryLoadingScreen } from "./actions/show-retry-loading-screen";
+import { showReturnToMainMenuButton } from "./actions/show-return-to-main-menu-button";
+
 import { initializeExperience } from "./services/initialize-experience";
 
 import { ExperienceContext, ExperienceEvent } from "./types";
@@ -113,7 +116,9 @@ export const experienceMachine = createMachine<
           });
         });
       },
+      show_main_menu: showMainMenu,
       show_retry_loading_screen: showRetryLoadingScreen,
+      show_return_to_main_menu_button: showReturnToMainMenuButton,
       refresh_page: () => {
         window.location.reload();
       },
