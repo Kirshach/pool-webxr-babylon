@@ -4,7 +4,7 @@ import { nanoid } from "nanoid";
 
 import { showMainMenu } from "./actions/show-main-menu";
 import { showRetryLoadingScreen } from "./actions/show-retry-loading-screen";
-import { showReturnToMainMenuButton } from "./actions/show-return-to-main-menu-button";
+import { MainMenuButton } from "./actions/show-return-to-main-menu-button";
 
 import { initializeExperience } from "./services/initialize-experience";
 
@@ -15,10 +15,14 @@ export const experienceMachine = createMachine<
   ExperienceEvent
 >(
   {
-    /** @xstate-layout N4IgpgJg5mDOIC5RgB4AcwCcCWYB2AxmAHTZ4D6AtgIZlX4CuAxAMoAqAggEpvkAKXDgGE2ASSEBRANoAGALqJQaAPaxsAF2zK8ikCkQBWABwziATgBsAZgsWAjHYBMRm1YMAaEAE9EVx6YB2ABYDILszRxCzKysAgF84z1QMHHwiUgo0TGoCTSIqZQgwVgAJAHkAdXIAWQ5RADkaiXqAVVkFJBAVNU1tXX0EKzNTRwCrIKNQ5zGLM08fQYMLczNV+ys7NyCzAIsEpPQsXEISABtlaggyKHIAM1pTyCYuCTYuAE1yABkyjgARBoAcXaum6Gi0Ok6AzsMgCAWIMiCszsFhksIswQs80Q-jMK1WBjGQSsaJk1n24EOqROxHOl2uTAg2hIZAAbsoANYkZJHNJnC5XPBQBBs5QEai9PDtEGdMGS-q+YbEUbjSZBaY2ObeRAwgz4nbOPwbKxGPaJSkpY7pOmCqCM5kZdlc4g86nWgXXEV4dniyXSuwdJSqcF9KGKkZEtUa2bYhCOYz64y2CwGOwBGQGCmuq38+lCphYTDKTDENCnCW3YuUF1UnO0j1Cr0+iUQ6XyUHB+VhwZKlUTKZGGZahaOBzEbarIwhAw7HZ2IwJc14QpwXTZvkdnoQhUIAC0WO1e71qxPKbcEUiZKztb5xAI2jwYFy13I6mU5AwWE3IchoAGASnYgp1iIwjDMIxHBTDNYyMOxxxPSwALMdVVmvS1b0wMAbWub8uz-HVIKsYg7CCMl7HnWwZEcWMKP1FNgmQuxQkzc11xpOgaA4xhcO3bsAKCIDiQAsCIKgjxDw2RxiAsSJLBI9UmJTNDeXYzJsmffJKBXHjQ3whB1VjDYjARFxRjnbYLCnM0DnQmlsKFO4HkgHTfz0RB+MEkCRMggxoMPWiEPo7YwmY5S3VzW0XJ3TZj1HMxFOGeKaNNOjCWCpj1UXOIgA */
+    /** @xstate-layout N4IgpgJg5mDOIC5RgB4AcwCcCWYB2AxmAHTZ4D6AtgIZlX4CuAxAMoAqAggEpvkAKXDgGE2ASSEBRANoAGALqJQaAPaxsAF2zK8ikCkQBWABwBGYgDYALDPMmAnAcsB2WwfMAaEAE9EAZhvEBjLBMkaWvk4uvgYAvjGeqBg4+ESkFGiY1ASaRFTKEGCsABIA8gDq5ACyHKIAclUStQCqsgpIICpqmtq6+gi+djLEAExOvuEmlka+w6ZOnj79bsR2q6tTkaFTcQnoWLiEJAA2ytQQZFDkAGa0R5BMXBJsXACa5AAyJRwAInUA4q1dJ0NFodO0+iYZJFiDJLOY7L5bJZhqMPN5EMNITCQsiJuYDP4nDtwHtkodiCczhcmBBtCQyAA3ZQAaxIiX2KWOp3OeCgCEZygI1G6eFagPawJFvT8gxGYwmUxmcwWiEhBhWayM+JkvgGvlMxPZZNSlJ5UBpdLSTNZxCNBxN3Iu-LwTKFIrFJjaSlUIJ64JlQ1G418k2msxM83RCGGBjs2OCw3xRhkJn840NpPtXKpvKYWEwykwxDQR2FV0LlFtmc5FMdvOdruFoLF8iBPql-v6sqDCrDyqjmLMQWClmcKMsdickzi8RAeHycF0ds5ba6oOlCAAtGjFtv4yEDweibPl+SCNo8GBshdyOplOQMFhV76waA+k4wsQwhEnFCjMnRksFUEFMYgJ1WMIgkxKwoQzJIs2ITAwFNC5nw7N9VUTXxiEmKFkRReEjAMYCTCMJx9xsRwI3MYZQjgjlyToGgmMYND107D9LC-cJNg-ACnCAqMQ2GCxhgnUdwjE0j6ONel0kya9ckoBc2L9DCEGRYCQyMGE+0TCNg2GGSEJQ3lrluSBVNfPREE47ifz-fjBMWUjyMPfFLGo2ijGMmtTKgKyN1TdU7ExLU7HsScjAcSMXLIiiPK8uiZyAA */
     id: "experience",
     initial: "loading",
     predictableActionArguments: true,
+
+    context: {
+      mainMenuButton: new MainMenuButton(),
+    },
 
     states: {
       connecting_to_peer: {
@@ -38,7 +42,9 @@ export const experienceMachine = createMachine<
       },
       in_practice_mode: {
         entry: "show_return_to_main_menu_button",
-        on: { SHOW_MAIN_MENU: { target: "in_main_menu" } },
+        on: {
+          SHOW_MAIN_MENU: { target: "in_main_menu" },
+        },
       },
       loading_failed: {
         entry: "show_retry_loading_screen",
@@ -117,8 +123,8 @@ export const experienceMachine = createMachine<
         });
       },
       show_main_menu: showMainMenu,
-      show_retry_loading_screen: showRetryLoadingScreen,
-      show_return_to_main_menu_button: showReturnToMainMenuButton,
+      show_retry_loading_screen: (ctx) => showRetryLoadingScreen,
+      show_return_to_main_menu_button: (ctx) => ctx.mainMenuButton.show(),
       refresh_page: () => {
         window.location.reload();
       },
