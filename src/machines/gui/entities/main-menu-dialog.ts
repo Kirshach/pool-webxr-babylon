@@ -5,7 +5,7 @@ export class MainMenuDialog {
   constructor({
     onStartPracticeButtonClick,
   }: {
-    onStartPracticeButtonClick: () => void;
+    onStartPracticeButtonClick: (e: MouseEvent) => void;
   }) {
     if (!MainMenuDialog.instance) {
       MainMenuDialog.instance = document.getElementById(
@@ -25,12 +25,14 @@ export class MainMenuDialog {
   }
 
   public close() {
-    MainMenuDialog.instance.close();
+    if (MainMenuDialog.instance.open) {
+      MainMenuDialog.instance.close();
+    }
   }
 
   public showModal() {
-    MainMenuDialog.instance.showModal();
+    if (MainMenuDialog.instance.open === false) {
+      MainMenuDialog.instance.showModal();
+    }
   }
-
-  public onClick() {}
 }

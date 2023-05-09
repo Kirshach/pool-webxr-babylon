@@ -1,18 +1,19 @@
 import { Peer } from "peerjs";
-import { createMachine, interpret, send, sendTo } from "xstate";
+import { createMachine, interpret, sendTo } from "xstate";
 import { nanoid } from "nanoid";
 
 import { initializeExperience } from "./services/initialize-experience";
 
 import { ExperienceContext, ExperienceEvent } from "./types";
 import { guiMachine } from "../gui";
+import { forwardTo } from "xstate/lib/actions";
 
 export const experienceMachine = createMachine<
   ExperienceContext,
   ExperienceEvent
 >(
   {
-    /** @xstate-layout N4IgpgJg5mDOIC5RgB4AcwCcCWYB2AxmAHTZ4D6AtgIZlX4CuAxAMoAqAggEpvkAKXDgGE2ASSEBRANoAGALqJQaAPaxsAF2zK8ikCkQBOAOwAOYgEYATAFYZAZgMA2SwBZnLkwBoQAT0Tnrc2JbGRlzYxMjRztXOwBfOO9UDBx8ImIAG2VqCDIocgAzWgzIJi4JNi4ATXIAGQB5DgARUQA5AHFZBSQQFTVNbV19BAiLG3snV3cvX0Q7Z2DQmWsTFxdLc3NHawSk9CxcQhIsnLymCG0SMgA3ZQBrEmSDtOPs3LwoBBvlAmoBvC6XV0fQ0Wh0PWGdjCxDsgWs8NCUUcJms3j8CBsZhCMksMWRdhMVl24H2qSOmTeZwueCueFuD2ITzJ6RO70+31+-0B5m6SlUoMGELm0NhAQRMiRKLR-msdmISxxlnsMhMBisRmJTMOLMpHyYWEwykwxDQGT+BSNlEZpO1r1OHy+dJ+fzBgPkwP5-yGwqCovhIUlqNmCHmLnlS0cMmRsqMsvixLwyggcF0WpeHv6YO9CAAtI5pbnHJqbS9iARtDSCJoPuR1MpyBgsBmBeDQMNo8QDBsTCZLAZlpHzAXcWGFRMjDIPNZY8WUrbiJgwKy8s2vUKEJsjL7LISUdY+8tzDN0XYHItQri+0YjJZTLPnuS6DQn4xV1n17GZPK3JEXKFAo4aoFlYWJLEqva3i4RgGPezK0g2mDUFW2BEFQSZgG+gptv45hbjCO5HvCB6BMeMqWOGoThKYUQxC4sHzsuNZFNgJQQJhrZ6IgHZdkevb9tYg4FqeBjnjiMTGDed6JCSc6loxUDsdm6zAS4Im-gYBgouEBhQreCQJEAA */
+    /** @xstate-layout N4IgpgJg5mDOIC5RgB4AcwCcCWYB2AxmAHTZ4D6AtgIZlX4CuAxAMoAqAggEpvkAKXDgGE2ASSEBRANoAGALqJQaAPaxsAF2zK8ikCkQAWAJwAmYgHYAjAA5zJ8wFYAbOYMGTbgDQgAnogDMDv7ExkZGTk7+lv7+1g4AvvHeqBg4+ESkFGiY1ASaRFTKEGBMAOIA8mzl5ACyHKIAcrUSDQCqsgpIICpqmtq6+gj+MpbEgZbOljImgTJG-k7efggG5k7ERjJOJnPmsXtGzonJ6Fi4hCQANsrUEGRQ5ABmtJeQTFwSbFwAmuQAMuUOAARRqlDq6HoaLQ6LqDIzmazESweMKWVaWcwyVZLRAmZwbMJGOIyEk2HYJJLgU5pC7Ea63e5MCDaEhkABuygA1iQUmd0lcbnc8FAEOzlARqH08B1wV1IVKBgERmMHBMnFMZg45gscQgJmZCeEXNYjBiHNZ-Mcqalzhl6UKoEyWZkOdziLyaXbBfdRXgORKpTLLJ0lKoof1YUrRuNJtNZvNFr4lQ4CWFIhbYqbrFaPbaBQzhUwsJhlJhiGhLpLHqXKO7qXm6d7hb7-ZLoTL5BCwwrI0NlTH1XGtQndXjEaEiYF3AZotFEpS8EU4Lpc-yu71oYqEABaRPLXc5+v84gEbR4MB5e7kdTKcgYLDr8Mw0CDJxxDYmGyHEyRBxBSy6si46ErY+z+CYOzZpSq60pgYD2vcj49i+iCWJYTgGMQn62BhP5OKqxijjEqbwjIcRxP4rjmIeNrHnQND0YwSGbr2b4pqYX4OD+gT-rqCzrIcwxxJY4RuHYTg0XytJ0NkuT5GAhTFMxEYoXqMjBP4BiUeqMRRAYQTWHx4TEOpuETFirj+EYkmevmDpPC8kDKc+eiIGxH6cdxf5RERwSGpi5FBFRNkNghwrOVu7iAcYxC2MYdjoWhNgSfOQA */
     id: "experience",
     initial: "loading",
     predictableActionArguments: true,
@@ -28,14 +29,25 @@ export const experienceMachine = createMachine<
         entry: "refresh_page",
       },
       in_main_menu: {
-        entry: sendTo("GUI", "SHOW_MAIN_MENU"),
+        entry: sendTo("GUI", "TO_MAIN_MENU"),
         on: {
           START_PRACTICE: {
             target: "in_practice_mode",
+            actions: [
+              forwardTo("GUI"),
+              sendTo("GUI", "HIDE_QUIT_TO_MAIN_MENU_BUTTON"),
+            ],
           },
         },
       },
-      in_practice_mode: {},
+      in_practice_mode: {
+        entry: sendTo("GUI", "TO_GAME"),
+        on: {
+          GOTO_MAIN_MENU: {
+            target: "in_main_menu",
+          },
+        },
+      },
       loading_failed: {
         entry: "show_retry_loading_screen",
         on: {

@@ -1,14 +1,14 @@
 import { type ErrorExecutionEvent } from "xstate";
 
-import { MainMenuButton } from "./entities/main-menu-button";
+import { QuitToMainMenuButton } from "./entities/quit-to-main-menu-button";
 import { MainMenuDialog } from "./entities/main-menu-dialog";
 
 export type GuiEvent =
-  | { type: "START_PRACTICE" }
-  | { type: "SHOW_MAIN_MENU" }
+  | { type: "TO_MAIN_MENU" }
+  | { type: "TO_GAME" }
   | ErrorExecutionEvent;
 
 export type GuiContext = {
-  mainMenuButton: MainMenuButton;
+  quitToMainMenuButton: QuitToMainMenuButton;
   mainMenuDialog: MainMenuDialog;
 };

@@ -1,13 +1,9 @@
 import { type ErrorExecutionEvent } from "xstate";
-import { MainMenuButton } from "../gui/entities/main-menu-button";
 
 export type ExperienceEvent =
   | { type: "RETRY_LOADING" }
+  | { type: "GOTO_MAIN_MENU" }
   | { type: "START_PRACTICE" }
-  | { type: "SHOW_MAIN_MENU" }
-  | { type: "CLOSE_MENU" }
   | ErrorExecutionEvent;
 
-export type ExperienceContext = {
-  mainMenuButton: MainMenuButton;
-};
+export type ExperienceContext = {};
