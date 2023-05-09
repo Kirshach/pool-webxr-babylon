@@ -1,4 +1,4 @@
-import { experienceService } from "../experience.machine";
+import { experienceService } from "../../experience/experience.machine";
 
 export class MainMenuButton {
   private static instance: HTMLButtonElement;

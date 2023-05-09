@@ -1,7 +1,7 @@
 import { ErrorExecutionEvent } from "xstate";
 
-import { experienceService } from "../experience.machine";
-import { ExperienceContext } from "../types";
+import { experienceService } from "../../experience/experience.machine";
+import { ExperienceContext } from "../../experience/types";
 
 export const showRetryLoadingScreen = (
   _: ExperienceContext,

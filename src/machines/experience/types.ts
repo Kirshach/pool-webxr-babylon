@@ -1,5 +1,5 @@
 import { type ErrorExecutionEvent } from "xstate";
-import { MainMenuButton } from "./actions/show-return-to-main-menu-button";
+import { MainMenuButton } from "../gui/entities/main-menu-button";
 
 export type ExperienceEvent =
   | { type: "RETRY_LOADING" }
