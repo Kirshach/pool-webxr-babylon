@@ -16,11 +16,11 @@
     "vite-plugin-gltf": "^3.1.0"
   },
   "dependencies": {
-    "@babylonjs/core": "^6.0.0",
-    "@babylonjs/gui": "^6.1.0",
-    "@babylonjs/havok": "^1.0.0",
-    "@babylonjs/inspector": "^6.0.0",
-    "@babylonjs/loaders": "^6.0.0",
+    "@babylonjs/core": "^6.3.0",
+    "@babylonjs/gui": "^6.3.0",
+    "@babylonjs/havok": "^1.0.1",
+    "@babylonjs/inspector": "^6.3.0",
+    "@babylonjs/loaders": "^6.3.0",
     "nanoid": "^4.0.2",
     "peerjs": "^1.4.7",
     "vite-plugin-mkcert": "^1.13.0",
