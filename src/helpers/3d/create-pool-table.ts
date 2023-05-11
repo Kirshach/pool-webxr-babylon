@@ -7,12 +7,13 @@ import {
   Scene,
   Vector3,
   TransformNode,
+  Quaternion,
 } from "@babylonjs/core";
 
 import {
   supportsAvif,
   supportsWebP,
-} from "../../../../shared/lib/is-image-format-supported";
+} from "../../shared/lib/is-image-format-supported";
 
 const getTableFolder = () => {
   if (supportsAvif) {
@@ -83,7 +84,7 @@ export const createPoolTable = (scene: Scene) =>
       "z"
     );
 
-    // nearer longer side blocks
+    // // nearer longer side blocks
     createBlock(
       {
         depth: 0.15,
@@ -119,6 +120,55 @@ export const createPoolTable = (scene: Scene) =>
       "x"
     );
 
+    // near corner blocks
+    createBlock(
+      {
+        depth: 0.175,
+        width: 0.05,
+        height: 0.1,
+        position: { x: 1.3605, y: 0.78719, z: 0.5625 },
+        rotation: [new Vector3(0, 1, 0), Math.PI / 4],
+      },
+      scene,
+      "z"
+    );
+
+    createBlock(
+      {
+        depth: 0.175,
+        width: 0.05,
+        height: 0.1,
+        position: { x: 1.2341, y: 0.78719, z: 0.6969 },
+        rotation: [new Vector3(0, 1, 0), Math.PI / 4],
+      },
+      scene,
+      "z"
+    );
+
+    // far corner blocks
+    createBlock(
+      {
+        depth: 0.175,
+        width: 0.05,
+        height: 0.1,
+        position: { x: -1.3605, y: 0.78719, z: 0.5625 },
+        rotation: [new Vector3(0, 1, 0), (Math.PI * 3) / 4],
+      },
+      scene,
+      "z"
+    );
+
+    createBlock(
+      {
+        depth: 0.175,
+        width: 0.05,
+        height: 0.1,
+        position: { x: -1.2341, y: 0.78719, z: 0.6969 },
+        rotation: [new Vector3(0, 1, 0), (Math.PI * 3) / 4],
+      },
+      scene,
+      "z"
+    );
     return {
       table,
     };
@@ -130,11 +180,13 @@ const createBlock = (
     width,
     height,
     position,
+    rotation,
   }: {
     depth: number;
     width: number;
     height: number;
     position: { x: number; y: number; z: number };
+    rotation?: [Vector3, number];
   },
   scene: Scene,
   symmetric: "x" | "y" | "z" | undefined = undefined
@@ -149,6 +201,10 @@ const createBlock = (
     scene
   );
   blockMesh.position.set(position.x, position.y, position.z);
+
+  if (rotation) {
+    blockMesh.rotate(...rotation);
+  }
 
   new PhysicsAggregate(
     blockMesh,
@@ -166,6 +222,7 @@ const createBlock = (
           width,
           height,
           position: { ...position, z: -position.z },
+          rotation: rotation ? [rotation[0], -rotation[1]] : undefined,
         },
         scene
       );
@@ -178,6 +235,7 @@ const createBlock = (
           position: Object.assign(position, {
             [symmetric]: -position[symmetric],
           }),
+          rotation: rotation ? [rotation[0], -rotation[1]] : undefined,
         },
         scene
       );

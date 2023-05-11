@@ -13,7 +13,7 @@ export const experienceMachine = createMachine<
   ExperienceEvent
 >(
   {
-    /** @xstate-layout N4IgpgJg5mDOIC5RgB4AcwCcCWYB2AxmAHTZ4D6AtgIZlX4CuAxAMoAqAggEpvkAKXDgGE2ASSEBRANoAGALqJQaAPaxsAF2zK8ikCkQAWAJwAmYgHYAjAA5zJ8wFYAbOYMGTbgDQgAnogDMDv7ExkZGTk7+lv7+1g4AvvHeqBg4+ESkFGiY1ASaRFTKEGBMAOIA8mzl5ACyHKIAcrUSDQCqsgpIICpqmtq6+gj+MpbEgZbOljImgTJG-k7efggG5k7ERjJOJnPmsXtGzonJ6Fi4hCQANsrUEGRQ5ABmtJeQTFwSbFwAmuQAMuUOAARRqlDq6HoaLQ6LqDIzmazESweMKWVaWcwyVZLRAmZwbMJGOIyEk2HYJJLgU5pC7Ea63e5MCDaEhkABuygA1iQUmd0lcbnc8FAEOzlARqH08B1wV1IVKBgERmMHBMnFMZg45gscQgJmZCeEXNYjBiHNZ-Mcqalzhl6UKoEyWZkOdziLyaXbBfdRXgORKpTLLJ0lKoof1YUrRuNJtNZvNFr4lQ4CWFIhbYqbrFaPbaBQzhUwsJhlJhiGhLpLHqXKO7qXm6d7hb7-ZLoTL5BCwwrI0NlTH1XGtQndXjEaEiYF3AZotFEpS8EU4Lpc-yu71oYqEABaRPLXc5+v84gEbR4MB5e7kdTKcgYLDr8Mw0CDJxxDYmGyHEyRBxBSy6si46ErY+z+CYOzZpSq60pgYD2vcj49i+iCWJYTgGMQn62BhP5OKqxijjEqbwjIcRxP4rjmIeNrHnQND0YwSGbr2b4pqYX4OD+gT-rqCzrIcwxxJY4RuHYTg0XytJ0NkuT5GAhTFMxEYoXqMjBP4BiUeqMRRAYQTWHx4TEOpuETFirj+EYkmevmDpPC8kDKc+eiIGxH6cdxf5RERwSGpi5FBFRNkNghwrOVu7iAcYxC2MYdjoWhNgSfOQA */
+    /** @xstate-layout N4IgpgJg5mDOIC5RgB4AcwCcCWYB2AxmAHTZ4D6AtgIZlX4CuAxAMoAqAggEpvkAKXDgGE2ASSEBRANoAGALqJQaAPaxsAF2zK8ikCkQAWABwAmYgHYAjEfMA2EyYMBOJwGYArAYA0IAJ6JLEyNidxkwmVtbV1sjQPMDAF8En1QMHHwiUgo0TGoCTSIqZQgwJgBxAHk2CvIAWQ5RADk6iUaAVVkFJBAVNU1tXX0EEydLYg9Ld3NzVxNbdxcjdx9-YfcxpwjHeNtLPY9zJJT0LFxCEgAbZWoIMigmCG0SMgA3ZQBrElTTjMvr27wUAQr2UBGo-TwnU6ul6Gi0Om6QxGYwmUxmcwWTiWK0M7ncxAMWxM5nW8xM7iiR3AJ3S52IVxudweTyyb0+xG+tMyDIBQJBYIhUMsXSUqjhA0RiGR43WaNm80Wyz8iFcMjMhPsHkJbiMrlcVM5Z25-yZWEwykwxDQF3BADMLZQOTSjX9GYDgXg3gL4VD5DCxRDBlLRjLJtN5ZjscqEK5nMRNvZJk4SaZzE4kskQHhinBdIbfv6+vCgwgALS2HFl2wG52-YgEbR4MD5O7kdTKcgYLCF8UI0BDGL4pwmay7EdLJWrAyq+NEpYuUIJmtpF1ZKi0CiURg9wOShCD+PjsfWPGVyzzYimWJzYeeGYk5c-Ol0HJ5ApgIolHfFveWGSucZp2mQJnAmGQjDPPFxlsZM3DxGRk3MIJHy5V1eW-CV+0MExK1mfENQcWIZDxdZEkzfM6R5VszQtDC+z0RAD2HUdAhPScVXJAk5z-EjLA8DMEiAA */
     id: "experience",
     initial: "loading",
     predictableActionArguments: true,
@@ -24,9 +24,6 @@ export const experienceMachine = createMachine<
       connecting_to_peer: {
         data: {},
         entry: "connect_to_peer",
-      },
-      reloading: {
-        entry: "refresh_page",
       },
       in_main_menu: {
         entry: sendTo("GUI", "TO_MAIN_MENU"),
@@ -48,14 +45,6 @@ export const experienceMachine = createMachine<
           },
         },
       },
-      loading_failed: {
-        entry: "show_retry_loading_screen",
-        on: {
-          RETRY_LOADING: {
-            target: "reloading",
-          },
-        },
-      },
       loading: {
         invoke: {
           src: "initializeExperience",
@@ -68,10 +57,11 @@ export const experienceMachine = createMachine<
               target: "in_main_menu",
             },
           ],
-          onError: {
-            target: "loading_failed",
-          },
+          onError: { target: "loading_error" },
         },
+      },
+      loading_error: {
+        entry: "show_retry_loading_screen",
       },
     },
 

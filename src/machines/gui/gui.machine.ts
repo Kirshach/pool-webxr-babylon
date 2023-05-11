@@ -1,6 +1,6 @@
 import { createMachine } from "xstate";
 
-import { showRetryLoadingScreen } from "./actions/show-retry-loading-screen";
+import { showRetryLoadingScreen } from "./entities/retry-loading-screen-dialog";
 import { MainMenuDialog } from "./entities/main-menu-dialog";
 import { QuitToMainMenuButton } from "./entities/quit-to-main-menu-button";
 
@@ -9,7 +9,7 @@ import { experienceService } from "../experience";
 
 export const guiMachine = createMachine<GuiContext, GuiEvent>(
   {
-    /** @xstate-layout N4IgpgJg5mDOIC5QHECqBJAdAOwPYH0oBXASwGIAVAeX2QEEBZAUQG0AGAXUVAAddYSAFxK5s3EAA9EARgAsAZkwB2NvOnz5AJmkA2NgA596gDQgAnjLazMAVjb3N8tgE5pmpa4C+n02ix5CUkoaBjp0ADl8ZnDUdi4kED4BYVFxKQQ5RRU1DW09QxNzRE1ZfUxNTR0bZ3klaRtDeR1Zb18MTBJsQgBDAFswQPJqKLDI6NjOcSShETEE9JtZZ2U7KwadJX1nfVlTCwQjW0dZarZNNiVNHelvHxA8CDhxPyn+GdT5xABaHT3vnVaID8OAIxBIr2SszSiFkmj+GWk0kwsl0OmcbGkZzq2hsgOBvW6nXw-WwREGEPec1A6SUWnKtJsbiusI2vyKByUmFcOjRlWkOxqujx7SJUD6AzBFJSVMkiC0OnKlRsSiUNhs8gUO3hh1WZzYOiMPJ0jluniAA */
+    /** @xstate-layout N4IgpgJg5mDOIC5QHECqBJAdAOwPYH0oBXASwGIAVAeX2QEEBZAUQG0AGAXUVAAddYSAFxK5s3EAA9EARgAsAZkwB2NvOnSlATiUAmJQA45+gDQgAnjI2Z9m+Tvl37ANgCsSlzoC+n02ix5CUkoaBjp0ADl8ZnDUdi4kED4BYVFxKQQ5RRU1DW09Q1kTc0R5WVlMVycdJ1kDdTZXb18MTABbAEMSbHxWsGwiQPJqWkZWTnEkoRExBPSXF01rHX02fTd9JwbpTVMLBENMWU1j4517Mv0lJpA-TC7Cdt7B4KiwyOjY8YTJlJnQOZc5SUR00+nkl00Tk0cl2MiUSkwmhcajUrmkYKc0m8PhAeAgcHEfgm-CmqVmiAAtE5YQgqZg2AzGUymVccbcAsQSMTktM0ohZDoadIdOUVqDjpUoY02S0Ovdev1BtzSX9JIglPIEXoHDYlNIoQppEKVocdJDIZiGg55E5rrd7lBHmAld8Sb8+Qg7E5MGdXEdljoXDV5DTNKLbPZhU4NXV5NjPEA */
     id: "GUI",
     predictableActionArguments: true,
     initial: "no_gui",
@@ -75,6 +75,9 @@ export const guiMachine = createMachine<GuiContext, GuiEvent>(
       show_main_menu: (ctx) => ctx.mainMenuDialog.showModal(),
       hide_main_menu: (ctx) => ctx.mainMenuDialog.close(),
       show_retry_loading_screen: (ctx) => showRetryLoadingScreen,
+      refresh_page: () => {
+        window.location.reload();
+      },
     },
     guards: {},
     services: {},
