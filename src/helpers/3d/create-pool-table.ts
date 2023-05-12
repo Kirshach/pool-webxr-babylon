@@ -7,7 +7,6 @@ import {
   Scene,
   Vector3,
   TransformNode,
-  Quaternion,
 } from "@babylonjs/core";
 
 import {
@@ -76,11 +75,36 @@ export const createPoolTable = (scene: Scene) =>
     // main block side additions
     createBlock(
       {
-        depth: 0.17,
+        depth: 0.1075,
         width: 2.446,
         height: 0.1,
         position: { x: 0, y: 0.746138, z: 0.56 },
         checkCollisions: true,
+      },
+      scene,
+      "z"
+    );
+
+    // middle holes angle blocks
+    createBlock(
+      {
+        depth: 0.15,
+        width: 0.05,
+        height: 0.1,
+        position: { x: 0.05, y: 0.746138, z: 0.6 },
+        rotation: [new Vector3(0, 1, 0), Math.PI / 4],
+      },
+      scene,
+      "z"
+    );
+
+    createBlock(
+      {
+        depth: 0.15,
+        width: 0.05,
+        height: 0.1,
+        position: { x: -0.05, y: 0.746138, z: 0.6 },
+        rotation: [new Vector3(0, 1, 0), -Math.PI / 4],
       },
       scene,
       "z"
@@ -98,13 +122,39 @@ export const createPoolTable = (scene: Scene) =>
       "z"
     );
 
-    // further longer side blocks
+    // nearer corner angle blocks
+    createBlock(
+      {
+        depth: 0.05,
+        width: 0.05,
+        height: 0.1,
+        position: { x: 1.2235, y: 0.746138, z: 0.56 },
+        rotation: [new Vector3(0, 1, 0), Math.PI / 4],
+      },
+      scene,
+      "z"
+    );
+
+    // farther longer side blocks
     createBlock(
       {
         depth: 0.17,
         width: 1.086,
         height: 0.1,
         position: { x: -0.6435, y: 0.78719, z: 0.701775 },
+      },
+      scene,
+      "z"
+    );
+
+    // farther corner angle blocks
+    createBlock(
+      {
+        depth: 0.05,
+        width: 0.05,
+        height: 0.1,
+        position: { x: -1.2235, y: 0.746138, z: 0.56 },
+        rotation: [new Vector3(0, 1, 0), Math.PI / 4],
       },
       scene,
       "z"
@@ -175,10 +225,10 @@ export const createPoolTable = (scene: Scene) =>
     // nearer corner shorter side blocks
     createBlock(
       {
-        depth: 0.275,
+        depth: 0.15,
         width: 0.09,
         height: 0.1,
-        position: { x: 1.4, y: 0.78719, z: 0.62 },
+        position: { x: 1.4, y: 0.7925, z: 0.68 },
       },
       scene,
       "z"
@@ -187,10 +237,10 @@ export const createPoolTable = (scene: Scene) =>
     // nearer corner longer side blocks
     createBlock(
       {
-        depth: 0.275,
+        depth: 0.15,
         width: 0.09,
         height: 0.1,
-        position: { x: 1.25, y: 0.78719, z: 0.73 },
+        position: { x: 1.35, y: 0.7925, z: 0.73 },
         rotation: [new Vector3(0, 1, 0), Math.PI / 2],
       },
       scene,
@@ -200,10 +250,10 @@ export const createPoolTable = (scene: Scene) =>
     // farther corner shorter side blocks
     createBlock(
       {
-        depth: 0.275,
+        depth: 0.15,
         width: 0.09,
         height: 0.1,
-        position: { x: -1.4, y: 0.78719, z: 0.62 },
+        position: { x: -1.4, y: 0.7925, z: 0.68 },
       },
       scene,
       "z"
@@ -212,10 +262,10 @@ export const createPoolTable = (scene: Scene) =>
     // farther corner longer side blocks
     createBlock(
       {
-        depth: 0.275,
+        depth: 0.15,
         width: 0.09,
         height: 0.1,
-        position: { x: -1.25, y: 0.78719, z: 0.73 },
+        position: { x: -1.35, y: 0.7925, z: 0.73 },
         rotation: [new Vector3(0, 1, 0), Math.PI / 2],
       },
       scene,
@@ -242,6 +292,63 @@ export const createPoolTable = (scene: Scene) =>
         height: 0.1,
         position: { x: 0.10222, y: 0.78719, z: 0.655 },
         rotation: [new Vector3(0, 1, 0), Math.PI - 0.59],
+      },
+      scene,
+      "z"
+    );
+
+    createBlock(
+      {
+        depth: 0.05,
+        width: 0.22,
+        height: 0.1,
+        position: { x: 0, y: 0.79, z: 0.765 },
+      },
+      scene,
+      "z"
+    );
+
+    createBlock(
+      {
+        depth: 0.1,
+        width: 0.05,
+        height: 0.1,
+        position: { x: 0.0902, y: 0.78719, z: 0.718 },
+      },
+      scene,
+      "z"
+    );
+
+    createBlock(
+      {
+        depth: 0.1,
+        width: 0.05,
+        height: 0.1,
+        position: { x: -0.0902, y: 0.78719, z: 0.718 },
+      },
+      scene,
+      "z"
+    );
+
+    createBlock(
+      {
+        depth: 0.1,
+        width: 0.05,
+        height: 0.1,
+        position: { x: -0.0902, y: 0.78719, z: 0.718 },
+        rotation: [new Vector3(0, 1, 0), Math.PI / 4],
+      },
+      scene,
+      "z"
+    );
+
+    createBlock(
+      {
+        depth: 0.1,
+        width: 0.05,
+        height: 0.1,
+        position: { x: 0.0902, y: 0.78719, z: 0.718 },
+        rotation: [new Vector3(0, 1, 0), -Math.PI / 4],
       },
       scene,
       "z"
@@ -324,5 +431,5 @@ const createBlock = (
       );
     }
   }
-  // blockMesh.isVisible = false;
+  blockMesh.isVisible = false;
 };
