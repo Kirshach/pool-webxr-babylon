@@ -84,13 +84,13 @@ export const createPoolTable = (scene: Scene) =>
       "z"
     );
 
-    // // nearer longer side blocks
+    // nearer longer side blocks
     createBlock(
       {
-        depth: 0.15,
+        depth: 0.17,
         width: 1.086,
         height: 0.1,
-        position: { x: 0.6435, y: 0.78719, z: 0.69178 },
+        position: { x: 0.6435, y: 0.78719, z: 0.701775 },
       },
       scene,
       "z"
@@ -99,10 +99,10 @@ export const createPoolTable = (scene: Scene) =>
     // further longer side blocks
     createBlock(
       {
-        depth: 0.15,
+        depth: 0.17,
         width: 1.086,
         height: 0.1,
-        position: { x: -0.6435, y: 0.78719, z: 0.69178 },
+        position: { x: -0.6435, y: 0.78719, z: 0.701775 },
       },
       scene,
       "z"
@@ -112,15 +112,15 @@ export const createPoolTable = (scene: Scene) =>
     createBlock(
       {
         depth: 1.04,
-        width: 0.15,
+        width: 0.17,
         height: 0.1,
-        position: { x: 1.35611, y: 0.78719, z: 0 },
+        position: { x: 1.36611, y: 0.78719, z: 0 },
       },
       scene,
       "x"
     );
 
-    // near corner blocks
+    // nearer corner parallel blocks
     createBlock(
       {
         depth: 0.175,
@@ -145,7 +145,7 @@ export const createPoolTable = (scene: Scene) =>
       "z"
     );
 
-    // far corner blocks
+    // farther corner parallel blocks
     createBlock(
       {
         depth: 0.175,
@@ -169,6 +169,82 @@ export const createPoolTable = (scene: Scene) =>
       scene,
       "z"
     );
+
+    // nearer corner shorter side blocks
+    createBlock(
+      {
+        depth: 0.275,
+        width: 0.09,
+        height: 0.1,
+        position: { x: 1.4, y: 0.78719, z: 0.62 },
+      },
+      scene,
+      "z"
+    );
+
+    // nearer corner longer side blocks
+    createBlock(
+      {
+        depth: 0.275,
+        width: 0.09,
+        height: 0.1,
+        position: { x: 1.25, y: 0.78719, z: 0.73 },
+        rotation: [new Vector3(0, 1, 0), Math.PI / 2],
+      },
+      scene,
+      "z"
+    );
+
+    // farther corner shorter side blocks
+    createBlock(
+      {
+        depth: 0.275,
+        width: 0.09,
+        height: 0.1,
+        position: { x: -1.4, y: 0.78719, z: 0.62 },
+      },
+      scene,
+      "z"
+    );
+
+    // farther corner longer side blocks
+    createBlock(
+      {
+        depth: 0.275,
+        width: 0.09,
+        height: 0.1,
+        position: { x: -1.25, y: 0.78719, z: 0.73 },
+        rotation: [new Vector3(0, 1, 0), Math.PI / 2],
+      },
+      scene,
+      "z"
+    );
+
+    // middle hole edges blocks
+    createBlock(
+      {
+        depth: 0.051,
+        width: 0.05,
+        height: 0.1,
+        position: { x: -0.10222, y: 0.78719, z: 0.655 },
+        rotation: [new Vector3(0, 1, 0), 0.59],
+      },
+      scene,
+      "z"
+    );
+
+    createBlock(
+      {
+        depth: 0.051,
+        width: 0.05,
+        height: 0.1,
+        position: { x: 0.10222, y: 0.78719, z: 0.655 },
+        rotation: [new Vector3(0, 1, 0), Math.PI - 0.59],
+      },
+      scene,
+      "z"
+    );
+
     return {
       table,
     };
