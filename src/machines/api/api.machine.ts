@@ -1,4 +1,4 @@
-import { Peer } from "peerjs";
+// import { Peer } from "peerjs";
 import { createMachine, interpret } from "xstate";
 
 import { APIContext, APIEvent } from "./types";
@@ -24,7 +24,7 @@ export const apiMachine = createMachine<APIContext, APIEvent>(
       test_peer_connection: () => {},
     },
     services: {
-      test: () => {},
+      // test: () => {},
     },
   }
 );

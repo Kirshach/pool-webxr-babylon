@@ -74,7 +74,7 @@ export const guiMachine = createMachine<GuiContext, GuiEvent>(
       },
       show_main_menu: (ctx) => ctx.mainMenuDialog.showModal(),
       hide_main_menu: (ctx) => ctx.mainMenuDialog.close(),
-      show_retry_loading_screen: (ctx) => showRetryLoadingScreen,
+      show_retry_loading_screen: (_ctx) => showRetryLoadingScreen,
       refresh_page: () => {
         window.location.reload();
       },
