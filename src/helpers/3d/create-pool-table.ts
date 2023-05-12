@@ -65,9 +65,10 @@ export const createPoolTable = (scene: Scene) =>
     createBlock(
       {
         depth: 1.1,
-        width: 2.56,
+        width: 2.6,
         height: 0.1,
         position: { x: 0, y: 0.746138, z: 0 },
+        checkCollisions: true,
       },
       scene
     );
@@ -75,10 +76,11 @@ export const createPoolTable = (scene: Scene) =>
     // main block side additions
     createBlock(
       {
-        depth: 0.11,
-        width: 2.38,
+        depth: 0.17,
+        width: 2.446,
         height: 0.1,
         position: { x: 0, y: 0.746138, z: 0.56 },
+        checkCollisions: true,
       },
       scene,
       "z"
@@ -257,12 +259,14 @@ const createBlock = (
     height,
     position,
     rotation,
+    checkCollisions,
   }: {
     depth: number;
     width: number;
     height: number;
     position: { x: number; y: number; z: number };
     rotation?: [Vector3, number];
+    checkCollisions?: boolean;
   },
   scene: Scene,
   symmetric: "x" | "y" | "z" | undefined = undefined
@@ -288,7 +292,10 @@ const createBlock = (
     { mass: 0, friction: 100 },
     scene
   );
-  blockMesh.checkCollisions = true;
+  if (checkCollisions) {
+    blockMesh.checkCollisions = true;
+    blockMesh.collisionMask = 1;
+  }
 
   if (symmetric) {
     if (symmetric === "z") {
@@ -318,5 +325,4 @@ const createBlock = (
     }
   }
   // blockMesh.isVisible = false;
-  blockMesh.collisionMask = 1;
 };
