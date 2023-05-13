@@ -75,6 +75,7 @@ export const initializeExperience = async () => {
   const removeDot = drawTargetDot();
 
   if (navigator.xr) {
+    console.info("WebXR is supported");
     const xrExperience = await WebXRDefaultExperience.CreateAsync(scene, {
       floorMeshes: [ground],
       optionalFeatures: true,

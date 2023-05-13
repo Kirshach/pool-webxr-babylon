@@ -1,1 +1,1 @@
-export { guiMachine } from "./gui.machine";
+export { guiMachine, guiService } from "./gui.machine";

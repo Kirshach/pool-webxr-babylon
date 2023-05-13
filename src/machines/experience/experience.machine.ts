@@ -1,12 +1,11 @@
 import { Peer } from "peerjs";
-import { createMachine, interpret, sendTo } from "xstate";
+import { createMachine, interpret } from "xstate";
 import { nanoid } from "nanoid";
 
+import { guiService } from "../gui";
 import { initializeExperience } from "./services/initialize-experience";
 
 import { ExperienceContext, ExperienceEvent } from "./types";
-import { guiMachine } from "../gui";
-import { forwardTo } from "xstate/lib/actions";
 
 export const experienceMachine = createMachine<
   ExperienceContext,
@@ -18,27 +17,21 @@ export const experienceMachine = createMachine<
     initial: "loading",
     predictableActionArguments: true,
 
-    invoke: [{ id: "GUI", src: guiMachine }],
-
     states: {
       connecting_to_peer: {
         data: {},
         entry: "connect_to_peer",
       },
       in_main_menu: {
-        entry: sendTo("GUI", "TO_MAIN_MENU"),
+        entry: "show_main_menu",
         on: {
           START_PRACTICE: {
             target: "in_practice_mode",
-            actions: [
-              forwardTo("GUI"),
-              sendTo("GUI", "HIDE_QUIT_TO_MAIN_MENU_BUTTON"),
-            ],
           },
         },
       },
       in_practice_mode: {
-        entry: sendTo("GUI", "TO_GAME"),
+        entry: "show_in_game_gui",
         on: {
           GOTO_MAIN_MENU: {
             target: "in_main_menu",
@@ -73,6 +66,12 @@ export const experienceMachine = createMachine<
 
   {
     actions: {
+      show_main_menu: () => {
+        guiService.send({ type: "SHOW_MAIN_MENU" });
+      },
+      show_in_game_gui: () => {
+        guiService.send({ type: "SHOW_IN_GAME_UI" });
+      },
       connect_to_peer: () => {
         const url = new URL(window.location.href);
         const peerId = url.searchParams

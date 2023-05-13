@@ -1,4 +1,4 @@
-import { createMachine } from "xstate";
+import { createMachine, interpret } from "xstate";
 
 import { showRetryLoadingScreen } from "./entities/retry-loading-screen-dialog";
 import { MainMenuDialog } from "./entities/main-menu-dialog";
@@ -6,6 +6,14 @@ import { QuitToMainMenuButton } from "./entities/quit-to-main-menu-button";
 
 import type { GuiContext, GuiEvent } from "./types";
 import { experienceService } from "../experience";
+
+const pointerLockChangeInGameEventListener = () => {
+  if (document.pointerLockElement) {
+    guiService.send({ type: "HIDE_POINTER_IN_GAME_UI" });
+  } else {
+    guiService.send({ type: "SHOW_POINTER_IN_GAME_UI" });
+  }
+};
 
 export const guiMachine = createMachine<GuiContext, GuiEvent>(
   {
@@ -30,10 +38,10 @@ export const guiMachine = createMachine<GuiContext, GuiEvent>(
     states: {
       no_gui: {
         on: {
-          TO_GAME: {
+          SHOW_IN_GAME_UI: {
             target: "in_game_gui",
           },
-          TO_MAIN_MENU: {
+          SHOW_MAIN_MENU: {
             target: "main_menu_gui",
           },
         },
@@ -41,18 +49,25 @@ export const guiMachine = createMachine<GuiContext, GuiEvent>(
       main_menu_gui: {
         entry: ["show_main_menu"],
         on: {
-          TO_GAME: {
+          SHOW_IN_GAME_UI: {
             target: "in_game_gui",
             actions: ["hide_main_menu"],
           },
         },
       },
       in_game_gui: {
-        entry: "show_game_gui",
+        entry: ["show_game_gui", "add_pointer_lock_change_event_listener"],
         on: {
-          TO_MAIN_MENU: {
+          SHOW_MAIN_MENU: {
             target: "main_menu_gui",
             actions: "hide_game_gui",
+          },
+          POINTER_LOCKED: {},
+          HIDE_POINTER_IN_GAME_UI: {
+            actions: "hide_pointer_in_game_gui",
+          },
+          SHOW_POINTER_IN_GAME_UI: {
+            actions: "show_pointer_in_game_gui",
           },
         },
       },
@@ -66,20 +81,24 @@ export const guiMachine = createMachine<GuiContext, GuiEvent>(
 
   {
     actions: {
-      show_game_gui: (ctx) => {
-        ctx.quitToMainMenuButton.show();
+      add_pointer_lock_change_event_listener: () => {
+        document.addEventListener(
+          "pointerlockchange",
+          pointerLockChangeInGameEventListener
+        );
       },
-      hide_game_gui: (ctx) => {
-        ctx.quitToMainMenuButton.hide();
-      },
-      show_main_menu: (ctx) => ctx.mainMenuDialog.showModal(),
+      hide_pointer_in_game_gui: (ctx) => ctx.quitToMainMenuButton.hide(),
+      hide_game_gui: (ctx) => ctx.quitToMainMenuButton.hide(),
       hide_main_menu: (ctx) => ctx.mainMenuDialog.close(),
+      show_game_gui: (ctx) => ctx.quitToMainMenuButton.show(),
+      show_main_menu: (ctx) => ctx.mainMenuDialog.showModal(),
+      show_pointer_in_game_gui: (ctx) => ctx.quitToMainMenuButton.show(),
       show_retry_loading_screen: (_ctx) => showRetryLoadingScreen,
-      refresh_page: () => {
-        window.location.reload();
-      },
+      refresh_page: () => window.location.reload(),
     },
     guards: {},
     services: {},
   }
 );
+
+export const guiService = interpret(guiMachine);

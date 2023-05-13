@@ -53,16 +53,17 @@ button {
 
 #return-to-main-menu-button {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 15px;
+  left: 15px;
+  border: none;
+  padding: 10px;
 }
 
 dialog {
-  padding: 0;
+  padding: 2rem 4rem;
   border: 2px solid rgba(255, 255, 255, 0.3);
   max-height: 90%;
   max-width: 80%;
-  min-width: 50%;
 
   top: 50%;
   left: 50%;
@@ -83,7 +84,7 @@ dialog {
   }
 
   & form {
-    padding: 2rem;
+    padding: 0;
     width: 100%;
     margin: 0;
   }
@@ -119,7 +120,6 @@ dialog {
     gap: 0.5em;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1.5rem;
 
     & button {
       margin: 0.5rem 0;

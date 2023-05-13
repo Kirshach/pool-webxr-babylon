@@ -1,6 +1,5 @@
-import type { Interpreter } from "xstate";
 import { experienceService } from "./machines/experience";
-import { GuiContext } from "./machines/gui/types";
+import { guiService } from "./machines/gui";
 
 experienceService
   .onTransition((state) =>
@@ -8,6 +7,8 @@ experienceService
   )
   .start();
 
-(experienceService.children.get("GUI") as Interpreter<GuiContext>).onTransition(
-  (state) => console.info("GUI Machine State Update: ", state.value)
-);
+guiService
+  .onTransition((state) =>
+    console.info("GUI Machine State Update: ", state.value)
+  )
+  .start();
