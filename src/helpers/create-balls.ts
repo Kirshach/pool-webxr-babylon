@@ -27,7 +27,7 @@ const createBall = (
     scene
   );
   ballBody.shape = shape;
-  ballBody.setMassProperties({ mass: 10 });
+  ballBody.setMassProperties({ mass: 0.165 });
 
   return ball;
 };
@@ -39,7 +39,7 @@ export const createBalls = (scene: Scene) => {
     radius,
     scene
   );
-  ballPhysicsShape.material = { friction: 0.05, restitution: 0.1 };
+  ballPhysicsShape.material = { friction: 0.1, restitution: 0.3 };
 
   let ballsCount = 0;
 

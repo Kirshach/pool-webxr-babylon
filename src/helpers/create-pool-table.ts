@@ -354,6 +354,14 @@ export const createPoolTable = (scene: Scene) =>
       "z"
     );
 
+    // Then, call createHole for each hole on your pool table
+    createHole({ x: 1.287, y: 0.675, z: 0.62 }, scene);
+    createHole({ x: 0, y: 0.675, z: 0.66 }, scene);
+    createHole({ x: -1.287, y: 0.675, z: 0.62 }, scene);
+    createHole({ x: 1.287, y: 0.675, z: -0.62 }, scene);
+    createHole({ x: 0, y: 0.675, z: -0.66 }, scene);
+    createHole({ x: -1.287, y: 0.675, z: -0.62 }, scene);
+
     return {
       table,
     };
@@ -396,7 +404,7 @@ const createBlock = (
   new PhysicsAggregate(
     blockMesh,
     PhysicsShapeType.BOX,
-    { mass: 0, friction: 0.9, restitution: 0.3 },
+    { mass: 0, friction: 0.9, restitution: 0.01 },
     scene
   );
   if (checkCollisions) {
@@ -432,4 +440,45 @@ const createBlock = (
     }
   }
   blockMesh.isVisible = false;
+};
+
+const createHole = (
+  { x, y, z }: { x: number; y: number; z: number },
+  scene: Scene
+) => {
+  const diameter = 0.157;
+  const depth = 0.02;
+  const numberOfSides = 16;
+  const angleStep = (2 * Math.PI) / numberOfSides;
+  const radius = diameter / 2;
+  const boxWidth = (2 * Math.PI * radius) / numberOfSides;
+  const height = 0.25;
+
+  for (let i = 0; i < numberOfSides; i++) {
+    const angle = i * angleStep;
+    const boxPosition = {
+      x: x + radius * Math.cos(angle),
+      y: y - depth / 2,
+      z: z + radius * Math.sin(angle),
+    };
+    const box = MeshBuilder.CreateBox(
+      "holeSide",
+      { height, width: boxWidth, depth: depth },
+      scene
+    );
+    box.position.set(boxPosition.x, boxPosition.y, boxPosition.z);
+    box.rotation.y = -angle;
+    box.isVisible = false;
+
+    new PhysicsAggregate(box, PhysicsShapeType.BOX, { mass: 0 }, scene);
+  }
+
+  const bottomBox = MeshBuilder.CreateBox(
+    "holeBottom",
+    { height: 0.02, width: diameter, depth: diameter },
+    scene
+  );
+  bottomBox.position.set(x, y - height / 2, z);
+  new PhysicsAggregate(bottomBox, PhysicsShapeType.BOX, { mass: 0 }, scene);
+  bottomBox.isVisible = false;
 };

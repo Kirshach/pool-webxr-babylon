@@ -49,7 +49,7 @@ export const applyForceOnInteraction = (
       // Calculate force direction based on the contact point
       const forceDirection = ballCenter.subtract(contactPoint).normalize();
       // Apply force
-      const forceMagnitude = 30;
+      const forceMagnitude = 0.6;
       const force = forceDirection.scale(forceMagnitude);
       raycastResult.body?.applyImpulse(force, contactPoint);
     }
