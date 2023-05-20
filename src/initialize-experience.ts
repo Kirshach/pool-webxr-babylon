@@ -17,16 +17,16 @@ import "@babylonjs/loaders/glTF"; // TODO: 667kB, tree-shake it?
 // @ts-expect-error
 import HavokPhysics from "@babylonjs/havok";
 
-import { addDevtimeFeatures } from "../../../../helpers/add-devtime-features";
-import { createBalls } from "../../../../helpers/3d/create-balls";
-import { drawTargetDot } from "../../../../helpers/draw-target-dot";
-import { createCamera } from "../../../../helpers/3d/create-camera";
-import { createGround } from "../../../../helpers/3d/create-ground";
-import { createLights } from "../../../../helpers/3d/create-lights";
-import { createPoolTable } from "../../../../helpers/3d/create-pool-table";
-import { applyForceOnInteraction } from "../../../../helpers/apply-force-on-interaction";
+import { addDevtimeFeatures } from "./helpers/add-devtime-features";
+import { createBalls } from "./helpers/3d/create-balls";
+import { drawTargetDot } from "./helpers/draw-target-dot";
+import { createCamera } from "./helpers/3d/create-camera";
+import { createGround } from "./helpers/3d/create-ground";
+import { createLights } from "./helpers/3d/create-lights";
+import { createPoolTable } from "./helpers/3d/create-pool-table";
+import { applyForceOnInteraction } from "./helpers/apply-force-on-interaction";
 
-import myHeartIsHome from "../../../../assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3";
+import myHeartIsHome from "./assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3";
 
 DracoCompression.Configuration = {
   decoder: {
@@ -177,6 +177,8 @@ export const initializeExperience = async () => {
   });
 
   engine.hideLoadingUI();
+
+  throw new Error("");
 
   return { scene, engine, camera, canvas, lights };
 };

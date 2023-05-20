@@ -24,6 +24,6 @@
     "nanoid": "^4.0.2",
     "peerjs": "^1.4.7",
     "vite-plugin-mkcert": "^1.13.0",
-    "xstate": "^4.37.1"
+    "xoid": "^1.0.0-beta.8"
   }
 }

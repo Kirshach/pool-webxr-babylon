@@ -1,15 +1,14 @@
-import { ErrorExecutionEvent } from "xstate";
-
-import { experienceService } from "../../experience/experience.machine";
-import { ExperienceContext } from "../../experience/types";
-
 export class RetryLoadingScreenDialog {
   private static instance: HTMLDialogElement;
   private static errorStackTrace = document.getElementById(
     "retry-loading-error-dialog__message-stack"
   ) as HTMLParagraphElement;
 
-  constructor() {
+  constructor({
+    onRetryButtonClick,
+  }: {
+    onRetryButtonClick: (e: MouseEvent) => void;
+  }) {
     if (!RetryLoadingScreenDialog.instance) {
       RetryLoadingScreenDialog.instance = document.getElementById(
         "retry-loading-dialog"
@@ -20,17 +19,12 @@ export class RetryLoadingScreenDialog {
       const retryButton = document.getElementById(
         "retry-loading-error-dialog__retry-button"
       ) as HTMLButtonElement;
-      retryButton.addEventListener("click", () => {
-        experienceService.send({ type: "RETRY_LOADING" });
-      });
+      retryButton.addEventListener("click", onRetryButtonClick);
     }
   }
 
-  show(e: ErrorExecutionEvent) {
-    RetryLoadingScreenDialog.errorStackTrace.textContent =
-      e + "\n" + e.data.stack;
+  public show(errorMessage: string) {
+    RetryLoadingScreenDialog.errorStackTrace.textContent = errorMessage;
     RetryLoadingScreenDialog.instance.showModal();
   }
 }
-
-export const showRetryLoadingScreen = (_: ExperienceContext) => {};
