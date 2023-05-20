@@ -39,7 +39,7 @@ export const createBalls = (scene: Scene) => {
     radius,
     scene
   );
-  ballPhysicsShape.material = { friction: 0.05, restitution: 0.2 };
+  ballPhysicsShape.material = { friction: 0.05, restitution: 0.1 };
 
   let ballsCount = 0;
 

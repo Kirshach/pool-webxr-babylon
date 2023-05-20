@@ -12,7 +12,7 @@ import {
 import {
   supportsAvif,
   supportsWebP,
-} from "../../shared/lib/is-image-format-supported";
+} from "../shared/lib/is-image-format-supported";
 
 const getTableFolder = () => {
   if (supportsAvif) {
@@ -396,7 +396,7 @@ const createBlock = (
   new PhysicsAggregate(
     blockMesh,
     PhysicsShapeType.BOX,
-    { mass: 0, friction: 100 },
+    { mass: 0, friction: 0.9, restitution: 0.3 },
     scene
   );
   if (checkCollisions) {

@@ -18,12 +18,12 @@ import "@babylonjs/loaders/glTF"; // TODO: 667kB, tree-shake it?
 import HavokPhysics from "@babylonjs/havok";
 
 import { addDevtimeFeatures } from "./helpers/add-devtime-features";
-import { createBalls } from "./helpers/3d/create-balls";
+import { createBalls } from "./helpers/create-balls";
 import { drawTargetDot } from "./helpers/draw-target-dot";
-import { createCamera } from "./helpers/3d/create-camera";
-import { createGround } from "./helpers/3d/create-ground";
-import { createLights } from "./helpers/3d/create-lights";
-import { createPoolTable } from "./helpers/3d/create-pool-table";
+import { createCamera } from "./helpers/create-camera";
+import { createGround } from "./helpers/create-ground";
+import { createLights } from "./helpers/create-lights";
+import { createPoolTable } from "./helpers/create-pool-table";
 import { applyForceOnInteraction } from "./helpers/apply-force-on-interaction";
 
 import myHeartIsHome from "./assets/music/melodyloops-preview-my-heart-is-home-1m27s.mp3";
@@ -177,8 +177,6 @@ export const initializeExperience = async () => {
   });
 
   engine.hideLoadingUI();
-
-  throw new Error("");
 
   return { scene, engine, camera, canvas, lights };
 };
