@@ -8,6 +8,7 @@ import {
 
 export const applyForceOnInteraction = (
   scene: Scene,
+  power = 0.6,
   controller?: WebXRInputSource
 ) => {
   const directionRay = new Ray(Vector3.Zero(), Vector3.Zero());
@@ -49,7 +50,7 @@ export const applyForceOnInteraction = (
       // Calculate force direction based on the contact point
       const forceDirection = ballCenter.subtract(contactPoint).normalize();
       // Apply force
-      const forceMagnitude = 0.6;
+      const forceMagnitude = power;
       const force = forceDirection.scale(forceMagnitude);
       raycastResult.body?.applyImpulse(force, contactPoint);
     }

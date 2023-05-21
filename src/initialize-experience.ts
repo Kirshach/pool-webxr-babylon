@@ -11,6 +11,7 @@ import {
   WebXRDefaultExperience,
   WebGPUEngine,
 } from "@babylonjs/core";
+import { Rectangle, AdvancedDynamicTexture, Control } from "@babylonjs/gui";
 
 import "@babylonjs/loaders/glTF"; // TODO: 667kB, tree-shake it?
 
@@ -141,7 +142,7 @@ export const initializeExperience = async () => {
         // Add an event listener for the trigger button
         triggerComponent.onButtonStateChangedObservable.add((component) => {
           if (component.pressed) {
-            applyForceOnInteraction(scene, controller);
+            applyForceOnInteraction(scene, 0.5, controller);
           }
         });
       });
@@ -152,23 +153,80 @@ export const initializeExperience = async () => {
     });
   }
 
-  canvas.addEventListener("click", () => {
-    applyForceOnInteraction(scene);
-  });
-
   if (process.env.NODE_ENV === "development") {
     addDevtimeFeatures(scene, [lights.spotLight]);
   }
-
-  engine.runRenderLoop(() => {
-    scene.render();
-  });
 
   // TODO: add fullscreen button
   canvas.addEventListener("click", () => {
     canvas.requestPointerLock?.();
   });
   window.addEventListener("resize", () => engine.resize());
+
+  // power bar & force application
+  const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI");
+  const oscillate = (time: number, frequency: number) => {
+    return 1 - Math.cos((time / 1000) * frequency) ** 2;
+  };
+  const frequency = 1;
+  const powerBar = new Rectangle("powerBar");
+  powerBar.width = "50px";
+  powerBar.height = "0px";
+  powerBar.color = "white";
+  powerBar.thickness = 3;
+  powerBar.background = "#FFFFFF88";
+  powerBar.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM; // Align bar at bottom
+  powerBar.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT; // Align bar at the right side
+  powerBar.left = "-35px"; // 50px from the right edge
+  const powerBarPadding = 150;
+  powerBar.top = `-${powerBarPadding}px`; // 50px from the right edge
+  advancedTexture.addControl(powerBar);
+
+  let mouseHit:
+    | { isHitting: true; startHittingTime: number; powerPercentage: number }
+    | { isHitting: false; startHittingTime: null; powerPercentage: null } = {
+    isHitting: false,
+    startHittingTime: null,
+    powerPercentage: null,
+  };
+  // add mouse hit
+  document.addEventListener("mousedown", () => {
+    if (document.pointerLockElement === canvas) {
+      mouseHit = {
+        isHitting: true,
+        startHittingTime: Date.now(),
+        powerPercentage: 0,
+      };
+    }
+  });
+
+  document.addEventListener("mouseup", () => {
+    if (document.pointerLockElement === canvas) {
+      applyForceOnInteraction(scene, mouseHit.powerPercentage!);
+      mouseHit = {
+        isHitting: false,
+        startHittingTime: null,
+        powerPercentage: null,
+      };
+    }
+  });
+
+  engine.runRenderLoop(() => {
+    if (document.pointerLockElement === canvas && mouseHit.isHitting) {
+      mouseHit.powerPercentage = oscillate(
+        Date.now() - mouseHit.startHittingTime!,
+        frequency
+      );
+      console.log(mouseHit.powerPercentage);
+      const powerBarHeight =
+        mouseHit.powerPercentage * (window.innerHeight - powerBarPadding * 2);
+      powerBar.height = powerBarHeight + "px";
+    } else {
+      powerBar.height = "0px";
+    }
+
+    scene.render();
+  });
 
   // add background music
   new Sound("Mark Woollard - My Heart Is Home", myHeartIsHome, scene, null, {
